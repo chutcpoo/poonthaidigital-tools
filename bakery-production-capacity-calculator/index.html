@@ -38,19 +38,29 @@
 <label>Setup / cleanup reserve (min)<input id="reserveMin" type="number" min="0" step="1" placeholder="e.g. 30"></label>
 </div>
 <div class="actions"><button class="btn btn-primary" onclick="calcBakery()">Estimate Capacity</button></div>
-<div class="result" id="result">Enter your production window to estimate capacity.</div>
+<div class="result" id="result" aria-live="polite">Enter your production window to estimate capacity.</div>
 <div class="notice">This simple estimate assumes sequential full batches and does not model overlapping tasks, oven constraints or staffing differences.</div>
 </div></div></section>
+
+<section class="content-section"><div class="wrap prose">
+<span class="eyebrow">PRODUCTION PLANNING</span><h2>How bakery production capacity is estimated</h2>
+<p>This calculator turns an available production window into a simple batch-capacity estimate. It subtracts the time you reserve for setup and cleanup, divides the remaining minutes by the time required for one full batch, then multiplies full batches by units per batch.</p>
+<div class="formula-box"><strong>Usable minutes = available minutes − reserve</strong><br><strong>Full batches = floor(usable minutes ÷ minutes per batch)</strong><br><strong>Estimated units = full batches × units per batch</strong></div>
+<h2>Worked example</h2><p>A home bakery has 300 minutes available, reserves 30 minutes for setup and cleanup, needs 45 minutes per batch and produces 24 units per batch. That leaves 270 usable minutes, enough for 6 full sequential batches, or an estimated <strong>144 units</strong>.</p>
+<div class="grid-3 compact-grid"><div class="mini-card"><strong>270 min</strong><span>usable production time</span></div><div class="mini-card"><strong>6</strong><span>full batches</span></div><div class="mini-card"><strong>144</strong><span>estimated units</span></div></div>
+<h2>What the estimate does — and does not — include</h2><p>The result is intentionally simple. It works best as a first-pass planning number for a mostly sequential workflow. Real bakery capacity can also depend on oven space, mixer capacity, cooling time, proofing, decorating, staffing, changeovers and whether tasks can overlap.</p>
+<h2>Ways to use the result</h2><ul><li>Check whether a planned order volume fits inside a work session.</li><li>Compare two batch sizes or production methods.</li><li>Reserve realistic setup and cleanup time instead of treating every minute as production time.</li><li>Identify when capacity, not demand, is the main constraint on accepting more orders.</li></ul>
+<h2>Common production-capacity mistakes</h2><ul><li><strong>Counting partial batches as full output.</strong> The calculator only counts complete batches.</li><li><strong>Forgetting non-production time.</strong> Packaging, setup and cleanup reduce usable capacity.</li><li><strong>Ignoring the bottleneck.</strong> Your oven, mixer or cooling space may cap output before total minutes do.</li><li><strong>Treating maximum capacity as a sales promise.</strong> Keep operational buffer for delays and rework.</li></ul>
+<h2>Plan ingredients as well as time</h2><p>Capacity answers how much you may be able to produce. For ingredients and packaging, use the <a href="/inventory-reorder-calculator/">Inventory Reorder Point Calculator</a> to estimate when recurring stock needs a purchase review.</p>
+<div class="faq"><h2>Bakery capacity FAQ</h2><details><summary>Why does the calculator round batches down?</summary><p>Because a partial time slot is not automatically a completed batch. Rounding down avoids counting output that does not fully fit inside the entered window.</p></details><details><summary>Can I use this for cakes, cookies or bread?</summary><p>Yes as a simple planning model, as long as you enter a meaningful batch time and batch size for your own process. Complex overlapping workflows need a more detailed schedule.</p></details><details><summary>Should setup and cleanup include packaging?</summary><p>Include any time you do not want counted as batch production. If packaging is a separate bottleneck, track it separately rather than hiding it inside the reserve.</p></details></div>
+</div></section>
+
 <section class="footer-cta"><div class="wrap grid-2">
 <div><h2>Need to plan orders and production together?</h2><p>Use the calculator for a quick estimate. Use the complete planner when you need an ongoing order and production workflow.</p></div>
 <div class="callout"><h3>Home Bakery Order Tracker & Production Planner</h3><p>Continue with the matching PoonthaiDigital digital product on Etsy.</p><a class="btn btn-gold" href="https://poonthaidigital.etsy.com/listing/4566738686" target="_blank" rel="noopener">View on Etsy ↗</a></div>
 </div></section></main>
 
-<footer><div class="wrap">
-<strong>PoonthaiDigital</strong><br>
-Free planning tools and digital operations templates for small businesses.
-<p class="small">Planning aids only. Nothing on this site is legal, tax, accounting, food-safety or regulatory advice.</p>
-</div></footer>
+<footer><div class="wrap"><div class="footer-grid"><div><strong>PoonthaiDigital</strong><br><span>Free planning tools and digital operations templates for small businesses.</span></div><div class="footer-links"><a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/disclaimer/">Disclaimer</a><a href="https://poonthaidigital.etsy.com" target="_blank" rel="noopener">Etsy Shop ↗</a></div></div><p class="small">Planning aids only. Nothing on this site is legal, tax, accounting, food-safety or regulatory advice.</p></div></footer>
 <script>
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
 </script>

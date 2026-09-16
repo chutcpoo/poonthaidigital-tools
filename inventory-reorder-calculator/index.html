@@ -38,20 +38,33 @@
 <label>Safety stock<input id="safety" type="number" min="0" step="0.01" placeholder="e.g. 30"></label>
 </div>
 <div class="actions"><button class="btn btn-primary" onclick="calcReorder()">Calculate Reorder Point</button></div>
-<div class="result" id="result">Enter your numbers to calculate a reorder point.</div>
+<div class="result" id="result" aria-live="polite">Enter your numbers to calculate a reorder point.</div>
 <div class="notice">Formula: average daily use × lead time + safety stock. Treat this as a planning estimate, not a guarantee.</div>
 </div></div></section>
+
+<section class="content-section"><div class="wrap prose">
+<span class="eyebrow">HOW IT WORKS</span><h2>What is a reorder point?</h2>
+<p>A reorder point is the inventory level that tells you when it is time to place the next order. It is different from the order quantity: the reorder point answers <strong>when to order</strong>, while your purchasing plan decides <strong>how much to order</strong>.</p>
+<div class="formula-box"><strong>Reorder point = average daily use × supplier lead time + safety stock</strong></div>
+<p>This simple version is useful when you already have a reasonable estimate of daily usage, supplier lead time and the extra buffer you want to keep. If demand or delivery times vary heavily, use a more detailed inventory method before making larger purchasing decisions.</p>
+<h2>Worked example</h2>
+<p>Suppose a cafe uses 20 units per day, its supplier normally needs 4 days to deliver, and the owner keeps 30 units as safety stock. Expected lead-time demand is 80 units, so the estimated reorder point is <strong>110 units</strong>. When on-hand stock approaches that level, it is time to review the next purchase.</p>
+<div class="grid-3 compact-grid"><div class="mini-card"><strong>20</strong><span>units used per day</span></div><div class="mini-card"><strong>4 days</strong><span>supplier lead time</span></div><div class="mini-card"><strong>110</strong><span>estimated reorder point</span></div></div>
+<h2>When this calculator is useful</h2>
+<ul><li>Planning ingredients, packaging or supplies that are used repeatedly.</li><li>Adding a consistent reorder trigger instead of waiting until stock looks low.</li><li>Comparing different lead-time and safety-stock assumptions before purchasing.</li><li>Reviewing one SKU quickly before moving the decision into a full inventory tracker.</li></ul>
+<h2>Common reorder-point mistakes</h2>
+<ul><li><strong>Using stale daily usage:</strong> update the average when sales or production changes.</li><li><strong>Ignoring supplier variability:</strong> a four-day average may not protect you if deliveries regularly take longer.</li><li><strong>Confusing reorder point with order quantity:</strong> reaching 110 units does not mean you should order 110 units.</li><li><strong>Using the same buffer for every item:</strong> critical or hard-to-source items may need a different safety-stock policy.</li></ul>
+<h2>Related planning tools</h2><p>If you make products in batches, pair this with the <a href="/bakery-production-capacity-calculator/">Bakery Production Capacity Calculator</a>. For drink shops, estimate ingredient demand first with the <a href="/boba-shop-inventory-calculator/">Boba Ingredient Usage Calculator</a>.</p>
+<div class="faq"><h2>Reorder point FAQ</h2><details><summary>Does this calculator tell me how much to order?</summary><p>No. It estimates the stock level that can trigger a purchase review. Order quantity is a separate decision based on demand, storage, supplier minimums, cash flow and other business constraints.</p></details><details><summary>What should I use for average daily use?</summary><p>Use a recent period that reflects normal operations. If demand is seasonal or highly variable, compare multiple periods rather than relying on one average.</p></details><details><summary>What is safety stock?</summary><p>Safety stock is an extra buffer held above expected lead-time demand. This calculator lets you enter the buffer directly rather than estimating a statistical service level.</p></details></div>
+</div></section>
+
 <section class="footer-cta"><div class="wrap grid-2">
 <div><h2>Need ongoing stock + waste tracking?</h2><p>The free calculator answers one question. The complete Etsy template is intended for repeatable inventory and waste tracking over time.</p></div>
 <div class="callout"><h3>Inventory & Waste Tracker</h3><p>Continue with the matching PoonthaiDigital digital product on Etsy.</p><a class="btn btn-gold" href="https://poonthaidigital.etsy.com/listing/4561821192" target="_blank" rel="noopener">View on Etsy ↗</a></div>
 </div></section>
 </main>
 
-<footer><div class="wrap">
-<strong>PoonthaiDigital</strong><br>
-Free planning tools and digital operations templates for small businesses.
-<p class="small">Planning aids only. Nothing on this site is legal, tax, accounting, food-safety or regulatory advice.</p>
-</div></footer>
+<footer><div class="wrap"><div class="footer-grid"><div><strong>PoonthaiDigital</strong><br><span>Free planning tools and digital operations templates for small businesses.</span></div><div class="footer-links"><a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/disclaimer/">Disclaimer</a><a href="https://poonthaidigital.etsy.com" target="_blank" rel="noopener">Etsy Shop ↗</a></div></div><p class="small">Planning aids only. Nothing on this site is legal, tax, accounting, food-safety or regulatory advice.</p></div></footer>
 <script>
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
 </script>

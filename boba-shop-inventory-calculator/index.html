@@ -38,19 +38,28 @@
 <label>Open days per week<input id="openDays" type="number" min="1" max="7" value="7"></label>
 </div>
 <div class="actions"><button class="btn btn-primary" onclick="calcBoba()">Estimate Usage</button></div>
-<div class="result" id="result">Enter one ingredient's usage to estimate daily and weekly demand.</div>
+<div class="result" id="result" aria-live="polite">Enter one ingredient's usage to estimate daily and weekly demand.</div>
 <div class="notice">Use your own recipe quantity and real sales assumptions. This tool does not account for waste, spoilage or recipe variation.</div>
 </div></div></section>
+
+<section class="content-section"><div class="wrap prose">
+<span class="eyebrow">INGREDIENT PLANNING</span><h2>Estimate boba ingredient usage from cups sold</h2>
+<p>This free calculator estimates the demand for one ingredient by multiplying expected cups sold by the amount of that ingredient used per cup. It then scales the daily number by the days your shop is open.</p>
+<div class="formula-box"><strong>Daily ingredient usage = cups per day × ingredient used per cup</strong><br><strong>Weekly ingredient usage = daily usage × open days</strong></div>
+<h2>Worked example</h2><p>If a shop expects 90 cups per day and one recipe uses 35 ml of an ingredient per cup, estimated usage is 3,150 ml per day. If the shop opens 6 days, that is 18,900 ml — or <strong>18.9 liters</strong> — before allowing for waste, spoilage or recipe variation.</p>
+<div class="grid-3 compact-grid"><div class="mini-card"><strong>90</strong><span>cups per day</span></div><div class="mini-card"><strong>35 ml</strong><span>per cup</span></div><div class="mini-card"><strong>18.9 L</strong><span>six-day estimate</span></div></div>
+<h2>Ingredients you can estimate</h2><p>Use the same method for tea base, milk, syrup, powder, toppings or other ingredients as long as the unit stays consistent. Run the calculator once per ingredient instead of mixing grams, milliliters and ounces in the same calculation.</p>
+<h2>Turn usage into an inventory decision</h2><p>Usage tells you how fast an ingredient may move. To estimate when to order it again, take the daily usage result into the <a href="/inventory-reorder-calculator/">Inventory Reorder Point Calculator</a> and add supplier lead time plus your own safety stock.</p>
+<h2>Common boba inventory mistakes</h2><ul><li><strong>Using menu sales instead of recipe usage:</strong> different drinks may use different quantities.</li><li><strong>Mixing units:</strong> convert to one unit before comparing stock with demand.</li><li><strong>Ignoring waste and spoilage:</strong> actual consumption can exceed theoretical recipe usage.</li><li><strong>Assuming every day is identical:</strong> weekends, promotions and seasonality can shift demand.</li></ul>
+<div class="faq"><h2>Boba ingredient calculator FAQ</h2><details><summary>Does the calculator include waste?</summary><p>No. It estimates theoretical recipe demand. Add a separate buffer based on your actual waste, spoilage and preparation practices.</p></details><details><summary>Can I calculate tapioca pearls and toppings?</summary><p>Yes. Use grams or ounces per cup for solid ingredients, then keep the same unit when comparing the result with your stock.</p></details><details><summary>Can this replace a full inventory sheet?</summary><p>No. It is designed for a quick one-ingredient estimate. A recurring tracker is more suitable when you need multiple ingredients, purchase records, counts and waste history together.</p></details></div>
+</div></section>
+
 <section class="footer-cta"><div class="wrap grid-2">
 <div><h2>Need a repeatable boba shop operations system?</h2><p>The free tool estimates one ingredient. The paid toolkit is the next step for a broader recurring workflow.</p></div>
 <div class="callout"><h3>Boba Shop Operations Toolkit</h3><p>Continue with the matching PoonthaiDigital digital product on Etsy.</p><a class="btn btn-gold" href="https://poonthaidigital.etsy.com/listing/4560696421" target="_blank" rel="noopener">View on Etsy ↗</a></div>
 </div></section></main>
 
-<footer><div class="wrap">
-<strong>PoonthaiDigital</strong><br>
-Free planning tools and digital operations templates for small businesses.
-<p class="small">Planning aids only. Nothing on this site is legal, tax, accounting, food-safety or regulatory advice.</p>
-</div></footer>
+<footer><div class="wrap"><div class="footer-grid"><div><strong>PoonthaiDigital</strong><br><span>Free planning tools and digital operations templates for small businesses.</span></div><div class="footer-links"><a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/disclaimer/">Disclaimer</a><a href="https://poonthaidigital.etsy.com" target="_blank" rel="noopener">Etsy Shop ↗</a></div></div><p class="small">Planning aids only. Nothing on this site is legal, tax, accounting, food-safety or regulatory advice.</p></div></footer>
 <script>
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
 </script>
