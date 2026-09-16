@@ -1,10 +1,23 @@
 
 const n = id => Number(document.getElementById(id)?.value || 0);
 const fmt = v => new Intl.NumberFormat(undefined,{maximumFractionDigits:2}).format(v);
+const postSafeEvent = (url, payload) => {
+  try {
+    const body = JSON.stringify(payload);
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon(url, new Blob([body], { type: 'application/json' }));
+    } else {
+      fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true }).catch(() => {});
+    }
+  } catch (_) {}
+};
 const trackVa = (name, data = {}) => {
   try {
     if (typeof window.va === 'function') window.va('event', { name, data });
   } catch (_) {}
+  if (name === 'Tool Used' && data.tool) {
+    postSafeEvent('/api/tool-use/', { tool: data.tool, sourcePath: window.location.pathname });
+  }
 };
 
 function calcReorder(){
