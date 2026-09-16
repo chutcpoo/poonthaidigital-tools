@@ -2,7 +2,6 @@ import crypto from 'node:crypto';
 import { neon } from '@neondatabase/serverless';
 
 let sqlClient;
-
 function db() {
   if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL missing');
   if (!sqlClient) sqlClient = neon(process.env.DATABASE_URL);
@@ -54,25 +53,40 @@ export async function neonInsert(table, payload) {
   if (table === 'leads') {
     await sql`INSERT INTO leads (email, lead_magnet, source_path, marketing_consent, privacy_version, utm_source, utm_medium, utm_campaign, status)
       VALUES (${payload.email}, ${payload.lead_magnet}, ${payload.source_path}, ${Boolean(payload.marketing_consent)}, ${payload.privacy_version || '2026-09-16'}, ${payload.utm_source || null}, ${payload.utm_medium || null}, ${payload.utm_campaign || null}, 'active')
-      ON CONFLICT (email, lead_magnet) DO UPDATE SET
-        source_path = EXCLUDED.source_path,
-        marketing_consent = leads.marketing_consent OR EXCLUDED.marketing_consent,
-        privacy_version = EXCLUDED.privacy_version,
-        utm_source = COALESCE(EXCLUDED.utm_source, leads.utm_source),
-        utm_medium = COALESCE(EXCLUDED.utm_medium, leads.utm_medium),
-        utm_campaign = COALESCE(EXCLUDED.utm_campaign, leads.utm_campaign),
-        status = 'active'`;
+      ON CONFLICT (email, lead_magnet) DO UPDATE SET source_path=EXCLUDED.source_path, marketing_consent=leads.marketing_consent OR EXCLUDED.marketing_consent, privacy_version=EXCLUDED.privacy_version, utm_source=COALESCE(EXCLUDED.utm_source,leads.utm_source), utm_medium=COALESCE(EXCLUDED.utm_medium,leads.utm_medium), utm_campaign=COALESCE(EXCLUDED.utm_campaign,leads.utm_campaign), status='active'`;
   } else if (table === 'lead_events') {
-    await sql`INSERT INTO lead_events (email, lead_magnet, event_name, source_path, metadata)
-      VALUES (${payload.email || null}, ${payload.lead_magnet || null}, ${payload.event_name}, ${payload.source_path || null}, ${JSON.stringify(payload.metadata || {})}::jsonb)`;
+    await sql`INSERT INTO lead_events (email, lead_magnet, event_name, source_path, metadata) VALUES (${payload.email || null}, ${payload.lead_magnet || null}, ${payload.event_name}, ${payload.source_path || null}, ${JSON.stringify(payload.metadata || {})}::jsonb)`;
   } else if (table === 'marketing_consents') {
-    await sql`INSERT INTO marketing_consents (email, lead_magnet, source_path, privacy_version)
-      VALUES (${payload.email}, ${payload.lead_magnet}, ${payload.source_path || null}, ${payload.privacy_version || '2026-09-16'})`;
+    await sql`INSERT INTO marketing_consents (email, lead_magnet, source_path, privacy_version) VALUES (${payload.email}, ${payload.lead_magnet}, ${payload.source_path || null}, ${payload.privacy_version || '2026-09-16'})`;
   } else if (table === 'unsubscribes') {
-    await sql`INSERT INTO unsubscribes (email, source) VALUES (${payload.email}, ${payload.source || 'website'})
-      ON CONFLICT (email) DO UPDATE SET source = EXCLUDED.source, unsubscribed_at = now()`;
-  } else {
-    throw new Error(`unsupported_table_${table}`);
-  }
+    await sql`INSERT INTO unsubscribes (email, source) VALUES (${payload.email}, ${payload.source || 'website'}) ON CONFLICT (email) DO UPDATE SET source=EXCLUDED.source, unsubscribed_at=now()`;
+  } else throw new Error(`unsupported_table_${table}`);
   return { ok: true, status: 201 };
+}
+
+export async function isUnsubscribed(email) {
+  const sql = db();
+  const rows = await sql`SELECT 1 FROM unsubscribes WHERE email=${email} LIMIT 1`;
+  return rows.length > 0;
+}
+
+export async function hasScheduledNurture(email, leadMagnet) {
+  const sql = db();
+  const rows = await sql`SELECT 1 FROM email_schedules WHERE email=${email} AND lead_magnet=${leadMagnet} AND status='scheduled' LIMIT 1`;
+  return rows.length > 0;
+}
+
+export async function recordEmailSchedule({ email, leadMagnet, messageType, resendEmailId, scheduledAt }) {
+  const sql = db();
+  await sql`INSERT INTO email_schedules (email, lead_magnet, message_type, resend_email_id, scheduled_at, status) VALUES (${email}, ${leadMagnet}, ${messageType}, ${resendEmailId}, ${scheduledAt}, 'scheduled') ON CONFLICT (resend_email_id) DO NOTHING`;
+}
+
+export async function getCancelableSchedules(email) {
+  const sql = db();
+  return sql`SELECT resend_email_id FROM email_schedules WHERE email=${email} AND status='scheduled' AND scheduled_at>now()`;
+}
+
+export async function markScheduleCancelled(resendEmailId) {
+  const sql = db();
+  await sql`UPDATE email_schedules SET status='cancelled', cancelled_at=now() WHERE resend_email_id=${resendEmailId}`;
 }
