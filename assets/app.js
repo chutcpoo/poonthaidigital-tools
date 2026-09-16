@@ -15,6 +15,16 @@ const trackVa = (name, data = {}) => {
   try {
     if (typeof window.va === 'function') window.va('event', { name, data });
   } catch (_) {}
+  try {
+    if (typeof window.gtag === 'function') {
+      if (name === 'Tool Used' && data.tool) {
+        window.gtag('event', 'tool_used', { tool_name: data.tool, page_path: window.location.pathname });
+      }
+      if (name === 'Etsy Click') {
+        window.gtag('event', 'etsy_click', { product: data.product || 'shop', page_path: data.sourcePath || window.location.pathname });
+      }
+    }
+  } catch (_) {}
   if (name === 'Tool Used' && data.tool) {
     postSafeEvent('/api/tool-use/', { tool: data.tool, sourcePath: window.location.pathname });
   }
