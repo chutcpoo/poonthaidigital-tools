@@ -70,23 +70,28 @@ export async function isUnsubscribed(email) {
   return rows.length > 0;
 }
 
-export async function hasScheduledNurture(email, leadMagnet) {
+export async function enqueueNurture(email, leadMagnet, messageType, sendAt) {
   const sql = db();
-  const rows = await sql`SELECT 1 FROM email_schedules WHERE email=${email} AND lead_magnet=${leadMagnet} AND status='scheduled' LIMIT 1`;
-  return rows.length > 0;
+  await sql`INSERT INTO nurture_queue (email, lead_magnet, message_type, send_at, status) VALUES (${email}, ${leadMagnet}, ${messageType}, ${sendAt}, 'pending') ON CONFLICT (email, lead_magnet, message_type) DO NOTHING`;
 }
 
-export async function recordEmailSchedule({ email, leadMagnet, messageType, resendEmailId, scheduledAt }) {
+export async function getDueNurture(limit = 25) {
   const sql = db();
-  await sql`INSERT INTO email_schedules (email, lead_magnet, message_type, resend_email_id, scheduled_at, status) VALUES (${email}, ${leadMagnet}, ${messageType}, ${resendEmailId}, ${scheduledAt}, 'scheduled') ON CONFLICT (resend_email_id) DO NOTHING`;
+  return sql`SELECT q.id, q.email, q.lead_magnet, q.message_type, q.send_at FROM nurture_queue q LEFT JOIN unsubscribes u ON u.email=q.email WHERE q.status='pending' AND q.send_at<=now() AND u.email IS NULL ORDER BY q.send_at ASC LIMIT ${limit}`;
 }
 
-export async function getCancelableSchedules(email) {
+export async function markNurtureSent(id, resendEmailId) {
   const sql = db();
-  return sql`SELECT resend_email_id FROM email_schedules WHERE email=${email} AND status='scheduled' AND scheduled_at>now()`;
+  await sql`UPDATE nurture_queue SET status='sent', resend_email_id=${resendEmailId || null}, processed_at=now() WHERE id=${id}`;
 }
 
-export async function markScheduleCancelled(resendEmailId) {
+export async function markNurtureFailed(id) {
   const sql = db();
-  await sql`UPDATE email_schedules SET status='cancelled', cancelled_at=now() WHERE resend_email_id=${resendEmailId}`;
+  await sql`UPDATE nurture_queue SET status='failed', processed_at=now() WHERE id=${id}`;
+}
+
+export async function cancelPendingNurture(email) {
+  const sql = db();
+  const rows = await sql`UPDATE nurture_queue SET status='cancelled', processed_at=now() WHERE email=${email} AND status='pending' RETURNING id`;
+  return rows.length;
 }
