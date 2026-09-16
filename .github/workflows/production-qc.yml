@@ -18,8 +18,8 @@ jobs:
           set -euo pipefail
           BASE="https://poonthaidigital.com"
           for i in {1..30}; do
-            if curl -fsS "$BASE/sitemap.xml" | grep -q '<loc>https://poonthaidigital.com/about/</loc>'; then
-              echo "Production is reachable with current sitemap."
+            if curl -fsS "$BASE/sitemap.xml" | grep -q '<loc>https://poonthaidigital.com/private-chef-job-cost-calculator/</loc>'; then
+              echo "Production is reachable with the expanded sitemap."
               exit 0
             fi
             sleep 10
@@ -36,21 +36,46 @@ jobs:
           curl -fsS "$BASE/robots.txt" -o /tmp/robots.txt
           curl -fsS "$BASE/sitemap.xml" -o /tmp/sitemap.xml
           curl -fsS "$BASE/assets/app.js" -o /tmp/app.js
-          test "$(grep -c '<loc>' /tmp/sitemap.xml)" -eq 10
+          test "$(grep -c '<loc>' /tmp/sitemap.xml)" -eq 14
           grep -q 'Sitemap: https://poonthaidigital.com/sitemap.xml' /tmp/robots.txt
           grep -q 'G-0299KE0RD0' /tmp/home.html
           grep -q 'etsy_click' /tmp/app.js
           grep -q 'tool_used' /tmp/app.js
+          grep -q 'buildCoffeeChecklist' /tmp/app.js
+          grep -q 'calcCleaningSchedule' /tmp/app.js
+          grep -q 'calcPrivateChefJob' /tmp/app.js
+          grep -q 'calcWasteCost' /tmp/app.js
           echo "Core production SEO + analytics checks passed."
 
-      - name: Verify IndexNow key and www redirect
+      - name: Verify four new tool routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://poonthaidigital.com"
+          for path in \
+            coffee-shop-opening-closing-checklist \
+            cafe-cleaning-schedule-planner \
+            private-chef-job-cost-calculator \
+            food-waste-cost-calculator; do
+            curl -fsS "$BASE/$path/" -o "/tmp/$path.html"
+            grep -q 'G-0299KE0RD0' "/tmp/$path.html"
+            grep -q '<link rel="canonical"' "/tmp/$path.html"
+            grep -q 'application/ld+json' "/tmp/$path.html"
+          done
+          echo "Four new tool routes are live with GA4, canonical and JSON-LD."
+
+      - name: Verify APIs, IndexNow key and www redirect
         shell: bash
         run: |
           set -euo pipefail
           KEY="075d7c906278535516f9ad6a0c883a2a"
           BODY="$(curl -fsS "https://poonthaidigital.com/${KEY}.txt")"
           test "$BODY" = "$KEY"
-          HEADERS="$(curl -sSI https://www.poonthaidigital.com/inventory-reorder-calculator/)"
+          TOOL_STATUS="$(curl -sS -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' --data '{"tool":"waste_cost","sourcePath":"/production-qc"}' https://poonthaidigital.com/api/tool-use/)"
+          test "$TOOL_STATUS" = "204"
+          ETSY_STATUS="$(curl -sS -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' --data '{"product":"coffee","sourcePath":"/production-qc","target":"https://poonthaidigital.etsy.com/listing/4561793463"}' https://poonthaidigital.com/api/etsy-click/)"
+          test "$ETSY_STATUS" = "204"
+          HEADERS="$(curl -sSI https://www.poonthaidigital.com/food-waste-cost-calculator/)"
           printf '%s\n' "$HEADERS" | grep -Eq '^HTTP/[^ ]+ 308'
-          printf '%s\n' "$HEADERS" | grep -qi '^location: https://poonthaidigital.com/inventory-reorder-calculator/'
-          echo "IndexNow key + canonical redirect checks passed."
+          printf '%s\n' "$HEADERS" | grep -qi '^location: https://poonthaidigital.com/food-waste-cost-calculator/'
+          echo "APIs, IndexNow key + canonical redirect checks passed."
