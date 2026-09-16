@@ -1,0 +1,11 @@
+{
+  "name": "poonthaidigital-tools",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@neondatabase/serverless": "1.1.0",
+    "fflate": "0.8.3",
+    "resend": "6.28.1"
+  }
+}

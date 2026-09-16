@@ -94,3 +94,14 @@ document.addEventListener('change', (event) => {
     trackVa('Tool Used',{tool:'restaurant_checklist'});
   }
 });
+
+const pdLeadRoutes=new Set([
+  '/inventory-reorder-calculator/','/food-waste-cost-calculator/','/bakery-production-capacity-calculator/','/boba-shop-inventory-calculator/',
+  '/restaurant-opening-closing-checklist/','/coffee-shop-opening-closing-checklist/','/cafe-cleaning-schedule-planner/','/private-chef-job-cost-calculator/'
+]);
+if(pdLeadRoutes.has(window.location.pathname)){
+  const script=document.createElement('script');
+  script.src='/assets/lead-funnel.js';
+  script.defer=true;
+  document.body.appendChild(script);
+}
