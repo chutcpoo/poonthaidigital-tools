@@ -1,0 +1,34 @@
+name: Canonical Release Snapshot
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build exact source snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          SHORT_SHA="${GITHUB_SHA::7}"
+          ZIP="PoonthaiDigital_Website_V4_${SHORT_SHA}.zip"
+          zip -qr "$ZIP" . -x '.git/*'
+          sha256sum "$ZIP" | tee "${ZIP}.sha256"
+          printf 'commit=%s\nrepo=%s\ncreated_utc=%s\n' "$GITHUB_SHA" "$GITHUB_REPOSITORY" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > RELEASE_IDENTITY.txt
+
+      - name: Upload canonical snapshot artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: poonthaidigital-website-v4-${{ github.sha }}
+          path: |
+            PoonthaiDigital_Website_V4_*.zip
+            PoonthaiDigital_Website_V4_*.zip.sha256
+            RELEASE_IDENTITY.txt
+          retention-days: 7
