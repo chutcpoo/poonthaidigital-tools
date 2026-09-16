@@ -13,18 +13,16 @@ export default function handler(req, res) {
     'inventory_reorder',
     'bakery_capacity',
     'boba_ingredient_usage',
-    'restaurant_checklist'
+    'restaurant_checklist',
+    'coffee_checklist',
+    'cleaning_schedule',
+    'private_chef_quote',
+    'waste_cost'
   ]);
   const tool = allowed.has(String(payload.tool)) ? String(payload.tool) : 'unknown';
   const sourcePath = String(payload.sourcePath || '/').slice(0, 160);
 
-  console.log(JSON.stringify({
-    event: 'tool_used',
-    tool,
-    sourcePath,
-    at: new Date().toISOString()
-  }));
-
+  console.log(JSON.stringify({ event:'tool_used', tool, sourcePath, at:new Date().toISOString() }));
   res.setHeader('Cache-Control', 'no-store');
   return res.status(204).end();
 }
