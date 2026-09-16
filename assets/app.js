@@ -56,9 +56,9 @@ document.addEventListener('click', (event) => {
     target: link.href
   });
   if (navigator.sendBeacon) {
-    navigator.sendBeacon('/api/etsy-click', new Blob([payload], { type: 'application/json' }));
+    navigator.sendBeacon('/api/etsy-click/', new Blob([payload], { type: 'application/json' }));
   } else {
-    fetch('/api/etsy-click', {
+    fetch('/api/etsy-click/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: payload,
