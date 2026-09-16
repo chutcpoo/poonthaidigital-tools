@@ -1,0 +1,10 @@
+{
+  "name": "poonthaidigital-tools",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "fflate": "0.8.3",
+    "resend": "6.28.1"
+  }
+}
