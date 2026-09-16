@@ -21,7 +21,7 @@ export default async function handler(req, res) {
   try {
     await neonInsert('unsubscribes', { email, source:String(body.source || 'website').slice(0,80) });
     const cancelled = await cancelPendingNurture(email);
-    await neonInsert('lead_events', { email, lead_magnet:null, event_name:'unsubscribed', source_path:'/unsubscribe/', metadata:{ cancelled_pending_emails:cancelled } }).catch(()=>{});
+    await neonInsert('lead_events', { email, lead_magnet:null, event_name:'unsubscribe', source_path:'/unsubscribe/', metadata:{ cancelled_pending_emails:cancelled } }).catch(()=>{});
     return res.status(200).json({ ok:true, cancelled });
   } catch (error) {
     console.error('unsubscribe', error);
