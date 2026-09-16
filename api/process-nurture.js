@@ -7,6 +7,10 @@ import { getDueNurture, markNurtureSent, requestBaseUrl } from './_lead-utils.js
 const SCHEDULER_KEY_SHA256 = '2145d423e99e073b4bdd9c0fd5619f2948e8591bacd38b6617bf9bf7ccc93262';
 
 function authorized(req) {
+  const authHeader = String(req.headers.authorization || '');
+  const cronSecret = process.env.CRON_SECRET;
+  if (cronSecret && authHeader === `Bearer ${cronSecret}`) return true;
+
   const supplied = String(req.headers['x-pd-scheduler-key'] || (process.env.VERCEL_ENV === 'preview' ? req.query?.key || '' : ''));
   if (!supplied) return false;
   const actual = crypto.createHash('sha256').update(supplied).digest('hex');
