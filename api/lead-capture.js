@@ -1,7 +1,7 @@
 import { Resend } from 'resend';
 import { STARTERS } from './_starter-config.js';
 import { deliveryEmail, nurtureEmails } from './_email-content.js';
-import { hasScheduledNurture, isUnsubscribed, makeDownloadToken, neonInsert, parseBody, recordEmailSchedule, requestBaseUrl, validEmail } from './_lead-utils.js';
+import { enqueueNurture, isUnsubscribed, makeDownloadToken, neonInsert, parseBody, requestBaseUrl, validEmail } from './_lead-utils.js';
 
 function allowedOrigin(req) {
   const origin = req.headers.origin;
@@ -39,30 +39,26 @@ export default async function handler(req, res) {
     const unsubscribeUrl = `${baseUrl}/unsubscribe/?email=${encodeURIComponent(email)}`;
     let emailQueued = false;
     let emailError = null;
-    let nurtureScheduled = 0;
+    let nurtureQueued = 0;
 
     if (process.env.RESEND_API_KEY) {
       const resend = new Resend(process.env.RESEND_API_KEY);
       const delivery = deliveryEmail(cfg, downloadUrl);
-      const { data: deliveryData, error: deliveryError } = await resend.emails.send({ from:'PoonthaiDigital <hello@poonthaidigital.com>', to:[email], subject:delivery.subject, html:delivery.html, text:delivery.text, tags:[{name:'funnel',value:'starter_delivery'},{name:'starter',value:slug}] });
-      if (deliveryError) emailError = deliveryError.message || 'delivery_failed';
-      else emailQueued = Boolean(deliveryData?.id);
+      const { data, error } = await resend.emails.send({ from:'PoonthaiDigital <hello@poonthaidigital.com>', to:[email], subject:delivery.subject, html:delivery.html, text:delivery.text, tags:[{name:'funnel',value:'starter_delivery'},{name:'starter',value:slug}] });
+      if (error) emailError = error.message || 'delivery_failed';
+      else emailQueued = Boolean(data?.id);
+    }
 
-      const suppressed = await isUnsubscribed(email);
-      const alreadyScheduled = await hasScheduledNurture(email, slug);
-      if (marketingConsent && !suppressed && !alreadyScheduled) {
-        for (const message of nurtureEmails(cfg, unsubscribeUrl)) {
-          const scheduledAt = new Date(Date.now() + message.delayDays * 86400000).toISOString();
-          const { data, error } = await resend.emails.send({ from:'PoonthaiDigital <hello@poonthaidigital.com>', to:[email], subject:message.subject, html:message.html, text:message.text, scheduledAt, tags:[{name:'funnel',value:message.key},{name:'starter',value:slug}] });
-          if (error || !data?.id) { console.warn('nurture-schedule', message.key, error); continue; }
-          await recordEmailSchedule({ email, leadMagnet:slug, messageType:message.key, resendEmailId:data.id, scheduledAt });
-          nurtureScheduled += 1;
-        }
+    if (marketingConsent && !(await isUnsubscribed(email))) {
+      for (const message of nurtureEmails(cfg, unsubscribeUrl)) {
+        const sendAt = new Date(Date.now() + message.delayDays * 86400000).toISOString();
+        await enqueueNurture(email, slug, message.key, sendAt);
+        nurtureQueued += 1;
       }
     }
 
-    console.log(JSON.stringify({ event:'lead_captured_server', leadMagnet:slug, sourcePath, marketingConsent, emailQueued, nurtureScheduled, at:new Date().toISOString() }));
-    return res.status(200).json({ ok:true, downloadUrl, expiresInSeconds:172800, emailQueued, emailError, nurtureScheduled });
+    console.log(JSON.stringify({ event:'lead_captured_server', leadMagnet:slug, sourcePath, marketingConsent, emailQueued, nurtureQueued, at:new Date().toISOString() }));
+    return res.status(200).json({ ok:true, downloadUrl, expiresInSeconds:172800, emailQueued, emailError, nurtureQueued });
   } catch (error) {
     console.error('lead-capture', error);
     return res.status(503).json({ ok:false, error:'lead_capture_unavailable' });
