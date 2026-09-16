@@ -1,0 +1,54 @@
+name: Submit IndexNow
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  submit-indexnow:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Wait for production key file
+        shell: bash
+        run: |
+          KEY="075d7c906278535516f9ad6a0c883a2a"
+          URL="https://poonthaidigital.com/${KEY}.txt"
+          for i in {1..30}; do
+            BODY="$(curl -fsS "$URL" 2>/dev/null || true)"
+            if [ "$BODY" = "$KEY" ]; then
+              echo "IndexNow key file is live."
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "IndexNow key file did not become live in time."
+          exit 1
+
+      - name: Submit sitemap URLs to IndexNow
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json, re, pathlib
+          xml = pathlib.Path('sitemap.xml').read_text()
+          urls = re.findall(r'<loc>(.*?)</loc>', xml)
+          payload = {
+              'host': 'poonthaidigital.com',
+              'key': '075d7c906278535516f9ad6a0c883a2a',
+              'keyLocation': 'https://poonthaidigital.com/075d7c906278535516f9ad6a0c883a2a.txt',
+              'urlList': urls,
+          }
+          pathlib.Path('/tmp/indexnow.json').write_text(json.dumps(payload))
+          print(f'Prepared {len(urls)} URLs for IndexNow')
+          PY
+          STATUS=$(curl -sS -o /tmp/indexnow-response.txt -w "%{http_code}" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            --data-binary @/tmp/indexnow.json \
+            https://api.indexnow.org/indexnow)
+          echo "IndexNow HTTP status: $STATUS"
+          cat /tmp/indexnow-response.txt || true
+          if [ "$STATUS" != "200" ] && [ "$STATUS" != "202" ]; then
+            exit 1
+          fi
