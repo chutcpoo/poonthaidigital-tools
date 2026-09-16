@@ -1,8 +1,14 @@
 
 const n = id => Number(document.getElementById(id)?.value || 0);
 const fmt = v => new Intl.NumberFormat(undefined,{maximumFractionDigits:2}).format(v);
+const trackVa = (name, data = {}) => {
+  try {
+    if (typeof window.va === 'function') window.va('event', { name, data });
+  } catch (_) {}
+};
 
 function calcReorder(){
+  trackVa('Tool Used', { tool: 'inventory_reorder' });
   const stock=n('stock'), use=n('dailyUse'), lead=n('leadDays'), safety=n('safety');
   const point=(use*lead)+safety;
   const cover=use>0?stock/use:0;
@@ -14,6 +20,7 @@ function calcReorder(){
     (use>0?`<br>Approximate stock cover: ${fmt(cover)} days.`:"");
 }
 function calcBakery(){
+  trackVa('Tool Used', { tool: 'bakery_capacity' });
   const available=n('availableMin'), batch=n('batchMin'), units=n('unitsBatch'), reserve=n('reserveMin');
   const usable=Math.max(0,available-reserve);
   const batches=batch>0?Math.floor(usable/batch):0;
@@ -21,6 +28,7 @@ function calcBakery(){
     `<strong>Estimated maximum: ${fmt(batches*units)} units</strong><br>${fmt(batches)} full batch(es) within ${fmt(usable)} usable minutes.`;
 }
 function calcBoba(){
+  trackVa('Tool Used', { tool: 'boba_ingredient_usage' });
   const cups=n('cupsDay'), per=n('useCup'), days=Math.max(1,Math.min(7,n('openDays')||7));
   const unit=document.getElementById('ingredientUnit')?.value || 'ml';
   const daily=cups*per;
@@ -39,9 +47,12 @@ const etsyProductFromUrl = (url) => {
 document.addEventListener('click', (event) => {
   const link = event.target.closest('a[href*="etsy.com"]');
   if (!link) return;
+  const product = etsyProductFromUrl(link.href);
+  const sourcePath = window.location.pathname;
+  trackVa('Etsy Click', { product, sourcePath });
   const payload = JSON.stringify({
-    product: etsyProductFromUrl(link.href),
-    sourcePath: window.location.pathname,
+    product,
+    sourcePath,
     target: link.href
   });
   if (navigator.sendBeacon) {
@@ -56,3 +67,13 @@ document.addEventListener('click', (event) => {
   }
 });
 
+
+
+document.addEventListener('change', (event) => {
+  if (event.target.matches('.checkitem input[type="checkbox"]') && event.target.checked) {
+    if (!window.__pdChecklistTracked) {
+      window.__pdChecklistTracked = true;
+      trackVa('Tool Used', { tool: 'restaurant_checklist' });
+    }
+  }
+});
