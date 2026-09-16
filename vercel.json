@@ -1,6 +1,12 @@
 {
   "cleanUrls": true,
   "trailingSlash": true,
+  "crons": [
+    {
+      "path": "/api/process-nurture",
+      "schedule": "0 15 * * *"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
