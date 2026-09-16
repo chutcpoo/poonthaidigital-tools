@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bakery Production Capacity Calculator | PoonthaiDigital</title>
+<meta name="description" content="Free bakery production capacity calculator. Estimate full batches and units that fit into your available production time after setup and cleanup.">
+<link rel="canonical" href="https://poonthaidigital.com/bakery-production-capacity-calculator/">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="theme-color" content="#16324F">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Bakery Production Capacity Calculator | PoonthaiDigital">
+<meta property="og:description" content="Free bakery production capacity calculator. Estimate full batches and units that fit into your available production time after setup and cleanup.">
+<meta property="og:url" content="https://poonthaidigital.com/bakery-production-capacity-calculator/">
+<link rel="stylesheet" href="/assets/styles.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Bakery Production Capacity Calculator", "url": "https://poonthaidigital.com/bakery-production-capacity-calculator/", "applicationCategory": "BusinessApplication", "operatingSystem": "Any", "isAccessibleForFree": true, "description": "Free bakery production capacity calculator. Estimate full batches and units that fit into your available production time after setup and cleanup.", "publisher": {"@type": "Organization", "name": "PoonthaiDigital", "url": "https://poonthaidigital.com"}}</script>
+</head>
+<body>
+<header><div class="wrap"><nav>
+<a class="brand" href="/"><span class="brandmark">P</span><span>PoonthaiDigital Tools</span></a>
+<div class="navlinks">
+<a href="/tools/">Free Tools</a>
+<a href="/restaurant-tools/">Restaurant</a>
+<a href="/bakery-tools/">Bakery</a>
+<a href="https://poonthaidigital.etsy.com" target="_blank" rel="noopener" class="btn btn-primary">Etsy Shop ↗</a>
+</div>
+</nav></div></header>
+<div class="wrap breadcrumbs"><a href="/">Home</a> / <a href="/tools/">Tools</a> / Bakery Capacity Calculator</div>
+<main>
+<section><div class="wrap hero-grid">
+<div><span class="eyebrow">BAKERY TOOL</span><h1 style="font-size:clamp(2.5rem,5vw,4.2rem)">Bakery Production Capacity Calculator</h1><p class="lede">Estimate the maximum units you can produce inside a fixed production window using batch time, batch size and a setup / cleanup reserve.</p></div>
+<div class="form-card">
+<div class="form-grid">
+<label>Available production minutes<input id="availableMin" type="number" min="0" step="1" placeholder="e.g. 300"></label>
+<label>Minutes per batch<input id="batchMin" type="number" min="1" step="1" placeholder="e.g. 45"></label>
+<label>Units per batch<input id="unitsBatch" type="number" min="1" step="1" placeholder="e.g. 24"></label>
+<label>Setup / cleanup reserve (min)<input id="reserveMin" type="number" min="0" step="1" placeholder="e.g. 30"></label>
+</div>
+<div class="actions"><button class="btn btn-primary" onclick="calcBakery()">Estimate Capacity</button></div>
+<div class="result" id="result">Enter your production window to estimate capacity.</div>
+<div class="notice">This simple estimate assumes sequential full batches and does not model overlapping tasks, oven constraints or staffing differences.</div>
+</div></div></section>
+<section class="footer-cta"><div class="wrap grid-2">
+<div><h2>Need to plan orders and production together?</h2><p>Use the calculator for a quick estimate. Use the complete planner when you need an ongoing order and production workflow.</p></div>
+<div class="callout"><h3>Home Bakery Order Tracker & Production Planner</h3><p>Continue with the matching PoonthaiDigital digital product on Etsy.</p><a class="btn btn-gold" href="https://poonthaidigital.etsy.com/listing/4566738686" target="_blank" rel="noopener">View on Etsy ↗</a></div>
+</div></section></main>
+
+<footer><div class="wrap">
+<strong>PoonthaiDigital</strong><br>
+Free planning tools and digital operations templates for small businesses.
+<p class="small">Planning aids only. Nothing on this site is legal, tax, accounting, food-safety or regulatory advice.</p>
+</div></footer>
+<script src="/assets/app.js"></script>
+</body></html>

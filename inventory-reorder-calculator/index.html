@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Free Inventory Reorder Point Calculator | PoonthaiDigital</title>
+<meta name="description" content="Free inventory reorder point calculator for small businesses. Estimate when to reorder stock using average daily usage, lead time and safety stock.">
+<link rel="canonical" href="https://poonthaidigital.com/inventory-reorder-calculator/">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="theme-color" content="#16324F">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Free Inventory Reorder Point Calculator | PoonthaiDigital">
+<meta property="og:description" content="Free inventory reorder point calculator for small businesses. Estimate when to reorder stock using average daily usage, lead time and safety stock.">
+<meta property="og:url" content="https://poonthaidigital.com/inventory-reorder-calculator/">
+<link rel="stylesheet" href="/assets/styles.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Inventory Reorder Point Calculator", "url": "https://poonthaidigital.com/inventory-reorder-calculator/", "applicationCategory": "BusinessApplication", "operatingSystem": "Any", "isAccessibleForFree": true, "description": "Free inventory reorder point calculator for small businesses. Estimate when to reorder stock using average daily usage, lead time and safety stock.", "publisher": {"@type": "Organization", "name": "PoonthaiDigital", "url": "https://poonthaidigital.com"}}</script>
+</head>
+<body>
+<header><div class="wrap"><nav>
+<a class="brand" href="/"><span class="brandmark">P</span><span>PoonthaiDigital Tools</span></a>
+<div class="navlinks">
+<a href="/tools/">Free Tools</a>
+<a href="/restaurant-tools/">Restaurant</a>
+<a href="/bakery-tools/">Bakery</a>
+<a href="https://poonthaidigital.etsy.com" target="_blank" rel="noopener" class="btn btn-primary">Etsy Shop ↗</a>
+</div>
+</nav></div></header>
+<div class="wrap breadcrumbs"><a href="/">Home</a> / <a href="/tools/">Tools</a> / Inventory Reorder Calculator</div>
+<main>
+<section><div class="wrap hero-grid">
+<div><span class="eyebrow">INVENTORY TOOL</span><h1 style="font-size:clamp(2.5rem,5vw,4.2rem)">Inventory Reorder Point Calculator</h1><p class="lede">Estimate a reorder point using average daily usage, supplier lead time and safety stock. Useful for restaurants, cafes, bakeries, retail and other small businesses.</p></div>
+<div class="form-card">
+<div class="form-grid">
+<label>Current stock<input id="stock" type="number" min="0" step="0.01" placeholder="e.g. 120"></label>
+<label>Average daily use<input id="dailyUse" type="number" min="0" step="0.01" placeholder="e.g. 20"></label>
+<label>Lead time (days)<input id="leadDays" type="number" min="0" step="1" placeholder="e.g. 4"></label>
+<label>Safety stock<input id="safety" type="number" min="0" step="0.01" placeholder="e.g. 30"></label>
+</div>
+<div class="actions"><button class="btn btn-primary" onclick="calcReorder()">Calculate Reorder Point</button></div>
+<div class="result" id="result">Enter your numbers to calculate a reorder point.</div>
+<div class="notice">Formula: average daily use × lead time + safety stock. Treat this as a planning estimate, not a guarantee.</div>
+</div></div></section>
+<section class="footer-cta"><div class="wrap grid-2">
+<div><h2>Need ongoing stock + waste tracking?</h2><p>The free calculator answers one question. The complete Etsy template is intended for repeatable inventory and waste tracking over time.</p></div>
+<div class="callout"><h3>Inventory & Waste Tracker</h3><p>Continue with the matching PoonthaiDigital digital product on Etsy.</p><a class="btn btn-gold" href="https://poonthaidigital.etsy.com/listing/4561821192" target="_blank" rel="noopener">View on Etsy ↗</a></div>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+<strong>PoonthaiDigital</strong><br>
+Free planning tools and digital operations templates for small businesses.
+<p class="small">Planning aids only. Nothing on this site is legal, tax, accounting, food-safety or regulatory advice.</p>
+</div></footer>
+<script src="/assets/app.js"></script>
+</body></html>
