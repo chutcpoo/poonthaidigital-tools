@@ -3,7 +3,7 @@
   "trailingSlash": true,
   "crons": [
     {
-      "path": "/api/process-nurture",
+      "path": "/api/process-nurture/",
       "schedule": "0 15 * * *"
     }
   ],
