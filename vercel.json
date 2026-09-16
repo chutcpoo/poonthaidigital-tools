@@ -19,19 +19,5 @@
         }
       ]
     }
-  ],
-  "redirects": [
-    {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "header",
-          "key": "host",
-          "value": "www.poonthaidigital.com"
-        }
-      ],
-      "destination": "https://poonthaidigital.com/:path*",
-      "permanent": true
-    }
   ]
 }
