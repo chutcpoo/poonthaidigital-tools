@@ -1,0 +1,56 @@
+name: Production QC
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  production-qc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Vercel production
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://poonthaidigital.com"
+          for i in {1..30}; do
+            if curl -fsS "$BASE/sitemap.xml" | grep -q '<loc>https://poonthaidigital.com/about/</loc>'; then
+              echo "Production is reachable with current sitemap."
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Production did not become ready in time."
+          exit 1
+
+      - name: Verify core HTTP and SEO surfaces
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://poonthaidigital.com"
+          curl -fsS "$BASE/" -o /tmp/home.html
+          curl -fsS "$BASE/robots.txt" -o /tmp/robots.txt
+          curl -fsS "$BASE/sitemap.xml" -o /tmp/sitemap.xml
+          curl -fsS "$BASE/assets/app.js" -o /tmp/app.js
+          test "$(grep -c '<loc>' /tmp/sitemap.xml)" -eq 10
+          grep -q 'Sitemap: https://poonthaidigital.com/sitemap.xml' /tmp/robots.txt
+          grep -q 'G-0299KE0RD0' /tmp/home.html
+          grep -q 'etsy_click' /tmp/app.js
+          grep -q 'tool_used' /tmp/app.js
+          echo "Core production SEO + analytics checks passed."
+
+      - name: Verify IndexNow key and www redirect
+        shell: bash
+        run: |
+          set -euo pipefail
+          KEY="075d7c906278535516f9ad6a0c883a2a"
+          BODY="$(curl -fsS "https://poonthaidigital.com/${KEY}.txt")"
+          test "$BODY" = "$KEY"
+          HEADERS="$(curl -sSI https://www.poonthaidigital.com/inventory-reorder-calculator/)"
+          printf '%s\n' "$HEADERS" | grep -Eq '^HTTP/[^ ]+ 308'
+          printf '%s\n' "$HEADERS" | grep -qi '^location: https://poonthaidigital.com/inventory-reorder-calculator/'
+          echo "IndexNow key + canonical redirect checks passed."
