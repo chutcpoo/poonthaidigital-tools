@@ -30,7 +30,7 @@
     btn.disabled=true; status.textContent='Preparing your secure starter…';
     const payload={
       email,leadMagnet:cfg.slug,sourcePath:location.pathname,marketingConsent:consent,website:'',
-      utm_source:qs.get('utm_source'),utm_medium:qs.get('utm_medium'),utm_campaign:qs.get('utm_campaign')
+      utm_source:qs.get('utm_source'),utm_medium:qs.get('utm_medium'),utm_campaign:qs.get('utm_campaign'),utm_content:qs.get('utm_content')
     };
     try{
       const r=await fetch('/api/lead-capture',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
