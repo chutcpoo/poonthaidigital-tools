@@ -17,14 +17,28 @@
 const n = id => Number(document.getElementById(id)?.value || 0);
 const fmt = v => new Intl.NumberFormat(undefined,{maximumFractionDigits:2}).format(v);
 const money = v => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:2}).format(v);
+
+// Preserve first-touch campaign attribution for the current browser session so
+// internal navigation does not discard the source that brought the visitor in.
 const pdQs = new URLSearchParams(window.location.search);
-const pdAttribution = {
+const pdCurrentAttribution = Object.fromEntries(Object.entries({
   utm_source: pdQs.get('utm_source'),
   utm_medium: pdQs.get('utm_medium'),
   utm_campaign: pdQs.get('utm_campaign'),
   utm_content: pdQs.get('utm_content')
-};
-const pdAttributionClean = Object.fromEntries(Object.entries(pdAttribution).filter(([,v]) => v));
+}).filter(([,v]) => v));
+let pdStoredAttribution = {};
+try {
+  pdStoredAttribution = JSON.parse(sessionStorage.getItem('pd_first_touch_attribution_v1') || '{}') || {};
+  if (!Object.keys(pdStoredAttribution).length && Object.keys(pdCurrentAttribution).length) {
+    pdStoredAttribution = { ...pdCurrentAttribution, landing_path: window.location.pathname };
+    sessionStorage.setItem('pd_first_touch_attribution_v1', JSON.stringify(pdStoredAttribution));
+  }
+} catch (_) {
+  pdStoredAttribution = {};
+}
+const pdAttributionClean = Object.keys(pdStoredAttribution).length ? pdStoredAttribution : pdCurrentAttribution;
+
 const postSafeEvent = (url, payload) => {
   try {
     const body = JSON.stringify(payload);
@@ -93,13 +107,15 @@ function calcWasteCost(){
 }
 
 const etsyProductFromUrl = (url) => {
-  if (url.includes('4561821192')) return 'inventory';
-  if (url.includes('4566738686')) return 'bakery';
-  if (url.includes('4560696421')) return 'boba';
-  if (url.includes('4561819638')) return 'restaurant';
-  if (url.includes('4561793463')) return 'coffee';
-  if (url.includes('4561795303')) return 'cleaning';
-  if (url.includes('4569445414')) return 'private_chef';
+  if (url.includes('4573789186')) return 'PDT-BPSC-001';
+  if (url.includes('4569445414')) return 'PDT-PCSO-001';
+  if (url.includes('4568730165')) return 'PDT-POGO-001';
+  if (url.includes('4566738686')) return 'PDT-HBOP-001';
+  if (url.includes('4560696421')) return 'PDT-BOBA-001';
+  if (url.includes('4561819638')) return 'PD-REST-003';
+  if (url.includes('4561793463')) return 'PD-COFFEE-002';
+  if (url.includes('4561795303')) return 'PD-CLEAN-004';
+  if (url.includes('4561821192')) return 'PD-STOCK-005';
   return 'shop';
 };
 
