@@ -1,6 +1,14 @@
 const n = id => Number(document.getElementById(id)?.value || 0);
 const fmt = v => new Intl.NumberFormat(undefined,{maximumFractionDigits:2}).format(v);
 const money = v => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:2}).format(v);
+const pdQs = new URLSearchParams(window.location.search);
+const pdAttribution = {
+  utm_source: pdQs.get('utm_source'),
+  utm_medium: pdQs.get('utm_medium'),
+  utm_campaign: pdQs.get('utm_campaign'),
+  utm_content: pdQs.get('utm_content')
+};
+const pdAttributionClean = Object.fromEntries(Object.entries(pdAttribution).filter(([,v]) => v));
 const postSafeEvent = (url, payload) => {
   try {
     const body = JSON.stringify(payload);
@@ -12,11 +20,11 @@ const trackVa = (name, data = {}) => {
   try { if (typeof window.va === 'function') window.va('event', { name, data }); } catch (_) {}
   try {
     if (typeof window.gtag === 'function') {
-      if (name === 'Tool Used' && data.tool) window.gtag('event','tool_used',{tool_name:data.tool,page_path:window.location.pathname});
-      if (name === 'Etsy Click') window.gtag('event','etsy_click',{product:data.product || 'shop',page_path:data.sourcePath || window.location.pathname});
+      if (name === 'Tool Used' && data.tool) window.gtag('event','tool_used',{tool_name:data.tool,page_path:window.location.pathname,...pdAttributionClean});
+      if (name === 'Etsy Click') window.gtag('event','etsy_click',{product:data.product || 'shop',page_path:data.sourcePath || window.location.pathname,...pdAttributionClean});
     }
   } catch (_) {}
-  if (name === 'Tool Used' && data.tool) postSafeEvent('/api/tool-use/', { tool:data.tool, sourcePath:window.location.pathname });
+  if (name === 'Tool Used' && data.tool) postSafeEvent('/api/tool-use/', { tool:data.tool, sourcePath:window.location.pathname, ...pdAttributionClean });
 };
 
 function calcReorder(){
@@ -83,7 +91,7 @@ document.addEventListener('click', (event) => {
   const link=event.target.closest('a[href*="etsy.com"]'); if (!link) return;
   const product=etsyProductFromUrl(link.href), sourcePath=window.location.pathname;
   trackVa('Etsy Click',{product,sourcePath});
-  const payload=JSON.stringify({product,sourcePath,target:link.href});
+  const payload=JSON.stringify({product,sourcePath,target:link.href,...pdAttributionClean});
   if (navigator.sendBeacon) navigator.sendBeacon('/api/etsy-click/',new Blob([payload],{type:'application/json'}));
   else fetch('/api/etsy-click/',{method:'POST',headers:{'Content-Type':'application/json'},body:payload,keepalive:true}).catch(()=>{});
 });

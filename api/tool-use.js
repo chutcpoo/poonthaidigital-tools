@@ -21,8 +21,14 @@ export default function handler(req, res) {
   ]);
   const tool = allowed.has(String(payload.tool)) ? String(payload.tool) : 'unknown';
   const sourcePath = String(payload.sourcePath || '/').slice(0, 160);
+  const attribution = {
+    utm_source: payload.utm_source ? String(payload.utm_source).slice(0,120) : null,
+    utm_medium: payload.utm_medium ? String(payload.utm_medium).slice(0,120) : null,
+    utm_campaign: payload.utm_campaign ? String(payload.utm_campaign).slice(0,160) : null,
+    utm_content: payload.utm_content ? String(payload.utm_content).slice(0,160) : null
+  };
 
-  console.log(JSON.stringify({ event:'tool_used', tool, sourcePath, at:new Date().toISOString() }));
+  console.log(JSON.stringify({ event:'tool_used', tool, sourcePath, ...attribution, at:new Date().toISOString() }));
   res.setHeader('Cache-Control', 'no-store');
   return res.status(204).end();
 }

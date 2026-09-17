@@ -26,11 +26,12 @@ export default async function handler(req, res) {
 
   const marketingConsent = body.marketingConsent === true;
   const sourcePath = String(body.sourcePath || '/').slice(0,160);
-  const lead = { email, lead_magnet:slug, source_path:sourcePath, marketing_consent:marketingConsent, privacy_version:'2026-09-16', utm_source:body.utm_source ? String(body.utm_source).slice(0,120) : null, utm_medium:body.utm_medium ? String(body.utm_medium).slice(0,120) : null, utm_campaign:body.utm_campaign ? String(body.utm_campaign).slice(0,160) : null };
+  const attribution = { utm_source:body.utm_source ? String(body.utm_source).slice(0,120) : null, utm_medium:body.utm_medium ? String(body.utm_medium).slice(0,120) : null, utm_campaign:body.utm_campaign ? String(body.utm_campaign).slice(0,160) : null, utm_content:body.utm_content ? String(body.utm_content).slice(0,160) : null };
+  const lead = { email, lead_magnet:slug, source_path:sourcePath, marketing_consent:marketingConsent, privacy_version:'2026-09-16', utm_source:attribution.utm_source, utm_medium:attribution.utm_medium, utm_campaign:attribution.utm_campaign };
 
   try {
     await neonInsert('leads', lead);
-    await neonInsert('lead_events', { email, lead_magnet:slug, event_name:'lead_captured', source_path:sourcePath, metadata:{ marketing_consent:marketingConsent } }).catch(()=>{});
+    await neonInsert('lead_events', { email, lead_magnet:slug, event_name:'lead_captured', source_path:sourcePath, metadata:{ marketing_consent:marketingConsent, ...attribution } }).catch(()=>{});
     if (marketingConsent) await neonInsert('marketing_consents', { email, lead_magnet:slug, source_path:sourcePath, privacy_version:'2026-09-16' }).catch(()=>{});
 
     const token = makeDownloadToken(slug);
@@ -57,7 +58,7 @@ export default async function handler(req, res) {
       }
     }
 
-    console.log(JSON.stringify({ event:'lead_captured_server', leadMagnet:slug, sourcePath, marketingConsent, emailQueued, nurtureQueued, at:new Date().toISOString() }));
+    console.log(JSON.stringify({ event:'lead_captured_server', leadMagnet:slug, sourcePath, marketingConsent, emailQueued, nurtureQueued, ...attribution, at:new Date().toISOString() }));
     return res.status(200).json({ ok:true, downloadUrl, expiresInSeconds:172800, emailQueued, emailError, nurtureQueued });
   } catch (error) {
     console.error('lead-capture', error);
