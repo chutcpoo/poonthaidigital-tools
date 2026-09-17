@@ -22,11 +22,11 @@ export const STARTERS = {
   'bakery-capacity-starter': {
     filename: 'PoonthaiDigital_Free_Bakery_Capacity_Starter.xlsx',
     starterName: 'Free Bakery Capacity Starter',
-    paidName: 'Home Bakery Order Tracker & Production Planner',
-    etsyUrl: 'https://poonthaidigital.etsy.com/listing/4566738686',
+    paidName: 'Bakery Production Schedule & Capacity Planner',
+    etsyUrl: 'https://poonthaidigital.etsy.com/listing/4573789186',
     freeScope: 'a single bake-day capacity check using batches, production time and available minutes',
-    advanced1: 'orders connected to production and ingredient needs',
-    advanced2: 'repeatable pickup, delivery and operations planning',
+    advanced1: 'orders and deadlines connected to batch requirements and task-level production planning',
+    advanced2: 'daily and weekly capacity, overload/conflict signals and next-action planning',
     kind: 'bakery'
   },
   'boba-operations-starter': {
