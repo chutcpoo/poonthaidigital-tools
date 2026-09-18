@@ -1,4 +1,12 @@
 // Meta Pixel — PoonthaiDigital PageView + privacy-safe funnel tracking
+window.pdNewMetaEventId = window.pdNewMetaEventId || ((name='Event') => {
+  const random = (globalThis.crypto && typeof globalThis.crypto.randomUUID === 'function')
+    ? globalThis.crypto.randomUUID()
+    : Math.random().toString(36).slice(2) + Date.now().toString(36);
+  return `${String(name).replace(/[^A-Za-z0-9_-]/g,'').slice(0,24)}.${Date.now()}.${random}`.slice(0,120);
+});
+window.__pdPageViewEventId = window.__pdPageViewEventId || window.pdNewMetaEventId('PageView');
+
 (function initMetaPixel(){
   if (window.__pdMetaPixelLoaded) return;
   window.__pdMetaPixelLoaded = true;
@@ -11,7 +19,7 @@
   s.parentNode.insertBefore(t,s)}(window, document,'script',
   'https://connect.facebook.net/en_US/fbevents.js');
   fbq('init', '1416562443742691');
-  fbq('track', 'PageView');
+  fbq('track', 'PageView', {}, { eventID: window.__pdPageViewEventId });
 })();
 
 const n = id => Number(document.getElementById(id)?.value || 0);
@@ -40,21 +48,7 @@ try {
 const pdAttributionClean = Object.keys(pdStoredAttribution).length ? pdStoredAttribution : pdCurrentAttribution;
 
 // Send only non-sensitive funnel metadata to Meta. Never include email addresses
-// or calculator inputs in Pixel events.
-const trackMeta = (name, data = {}) => {
-  try {
-    if (typeof window.fbq !== 'function') return;
-    const safeData = Object.fromEntries(Object.entries({
-      ...data,
-      page_path: window.location.pathname,
-      ...pdAttributionClean
-    }).filter(([,v]) => v !== undefined && v !== null && v !== ''));
-    if (name === 'Lead') window.fbq('track','Lead',safeData);
-    else window.fbq('trackCustom',name,safeData);
-  } catch (_) {}
-};
-window.pdTrackMeta = trackMeta;
-
+// or calculator inputs in Pixel or Conversions API events.
 const postSafeEvent = (url, payload) => {
   try {
     const body = JSON.stringify(payload);
@@ -62,7 +56,41 @@ const postSafeEvent = (url, payload) => {
     else fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body, keepalive:true }).catch(() => {});
   } catch (_) {}
 };
+
+const trackMeta = (name, data = {}, eventId = null) => {
+  const id = eventId || window.pdNewMetaEventId(name);
+  try {
+    const safeData = Object.fromEntries(Object.entries({
+      ...data,
+      page_path: window.location.pathname,
+      ...pdAttributionClean
+    }).filter(([,v]) => v !== undefined && v !== null && v !== ''));
+    if (typeof window.fbq === 'function') {
+      if (name === 'Lead') window.fbq('track','Lead',safeData,{eventID:id});
+      else window.fbq('trackCustom',name,safeData,{eventID:id});
+    }
+  } catch (_) {}
+  return id;
+};
+window.pdTrackMeta = trackMeta;
+
+window.pdSendMetaServerEvent = (eventName, eventId, data = {}) => {
+  if (!eventName || !eventId) return;
+  postSafeEvent('/api/meta-capi/', {
+    event_name:eventName,
+    event_id:eventId,
+    sourcePath:window.location.pathname,
+    ...pdAttributionClean,
+    ...data
+  });
+};
+
+if (window.__pdPageViewEventId) {
+  window.pdSendMetaServerEvent('PageView', window.__pdPageViewEventId);
+}
+
 const trackVa = (name, data = {}) => {
+  let metaEventId = null;
   try { if (typeof window.va === 'function') window.va('event', { name, data }); } catch (_) {}
   try {
     if (typeof window.gtag === 'function') {
@@ -70,9 +98,14 @@ const trackVa = (name, data = {}) => {
       if (name === 'Etsy Click') window.gtag('event','etsy_click',{product:data.product || 'shop',page_path:data.sourcePath || window.location.pathname,...pdAttributionClean});
     }
   } catch (_) {}
-  if (name === 'Tool Used' && data.tool) trackMeta('ToolUsed',{tool:data.tool});
-  if (name === 'Etsy Click') trackMeta('EtsyClick',{product:data.product || 'shop',source_path:data.sourcePath || window.location.pathname});
-  if (name === 'Tool Used' && data.tool) postSafeEvent('/api/tool-use/', { tool:data.tool, sourcePath:window.location.pathname, ...pdAttributionClean });
+  if (name === 'Tool Used' && data.tool) {
+    metaEventId = trackMeta('ToolUsed',{tool:data.tool});
+    postSafeEvent('/api/tool-use/', { event_id:metaEventId, tool:data.tool, sourcePath:window.location.pathname, ...pdAttributionClean });
+  }
+  if (name === 'Etsy Click') {
+    metaEventId = trackMeta('EtsyClick',{product:data.product || 'shop',source_path:data.sourcePath || window.location.pathname});
+  }
+  return metaEventId;
 };
 
 function calcReorder(){
@@ -140,8 +173,8 @@ const etsyProductFromUrl = (url) => {
 document.addEventListener('click', (event) => {
   const link=event.target.closest('a[href*="etsy.com"]'); if (!link) return;
   const product=etsyProductFromUrl(link.href), sourcePath=window.location.pathname;
-  trackVa('Etsy Click',{product,sourcePath});
-  const payload=JSON.stringify({product,sourcePath,target:link.href,...pdAttributionClean});
+  const metaEventId=trackVa('Etsy Click',{product,sourcePath});
+  const payload=JSON.stringify({event_id:metaEventId,product,sourcePath,target:link.href,...pdAttributionClean});
   if (navigator.sendBeacon) navigator.sendBeacon('/api/etsy-click/',new Blob([payload],{type:'application/json'}));
   else fetch('/api/etsy-click/',{method:'POST',headers:{'Content-Type':'application/json'},body:payload,keepalive:true}).catch(()=>{});
 });
