@@ -36,6 +36,7 @@
     try{
       const r=await fetch('/api/lead-capture',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
       const data=await r.json().catch(()=>({}));
+      if(r.status===429){status.textContent='Too many starter requests from this browser or email. Please wait about an hour and try again.';btn.disabled=false;return;}
       if(!r.ok||!data.ok||!data.downloadUrl) throw new Error(data.error||'capture_failed');
       const dl=el.querySelector('#pdDownload'); dl.href=data.downloadUrl;
       dl.addEventListener('click',()=>{ga('starter_download');meta('StarterDownload',{content_name:cfg.slug});},{once:true});

@@ -19,6 +19,38 @@ export function validEmail(value) {
   return email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email : null;
 }
 
+function requestIp(req) {
+  const forwarded = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim();
+  return forwarded || String(req.headers['x-real-ip'] || '').trim() || null;
+}
+
+export function abuseIpHash(req) {
+  const ip = requestIp(req);
+  const secret = process.env.DOWNLOAD_SIGNING_SECRET;
+  if (!ip || !secret) return null;
+  const day = new Date().toISOString().slice(0, 10);
+  return crypto.createHmac('sha256', secret).update(`abuse-ip:v1|${day}|${ip}`).digest('base64url');
+}
+
+export async function checkLeadRateLimit(email, ipHash) {
+  const sql = db();
+  const rows = await sql`SELECT
+    count(*) FILTER (WHERE email=${email} AND occurred_at > now() - interval '1 hour')::int AS email_hour,
+    count(*) FILTER (WHERE email=${email} AND occurred_at > now() - interval '24 hours')::int AS email_day,
+    count(*) FILTER (WHERE ${ipHash} IS NOT NULL AND metadata->>'abuse_ip_hash'=${ipHash} AND occurred_at > now() - interval '1 hour')::int AS ip_hour,
+    count(*) FILTER (WHERE ${ipHash} IS NOT NULL AND metadata->>'abuse_ip_hash'=${ipHash} AND occurred_at > now() - interval '24 hours')::int AS ip_day
+    FROM lead_events
+    WHERE event_name='lead_captured'
+      AND occurred_at > now() - interval '24 hours'
+      AND (email=${email} OR (${ipHash} IS NOT NULL AND metadata->>'abuse_ip_hash'=${ipHash}))`;
+  const counts = rows[0] || {};
+  const limited = Number(counts.email_hour || 0) >= 5
+    || Number(counts.email_day || 0) >= 12
+    || Number(counts.ip_hour || 0) >= 15
+    || Number(counts.ip_day || 0) >= 50;
+  return { limited, retryAfterSeconds: limited ? 3600 : 0, counts };
+}
+
 export function makeDownloadToken(slug, ttlSeconds = 60 * 60 * 48) {
   const secret = process.env.DOWNLOAD_SIGNING_SECRET;
   if (!secret) throw new Error('DOWNLOAD_SIGNING_SECRET missing');
