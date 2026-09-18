@@ -34,15 +34,30 @@ export function abuseIpHash(req) {
 
 export async function checkLeadRateLimit(email, ipHash) {
   const sql = db();
-  const rows = await sql`SELECT
-    count(*) FILTER (WHERE email=${email} AND occurred_at > now() - interval '1 hour')::int AS email_hour,
-    count(*) FILTER (WHERE email=${email} AND occurred_at > now() - interval '24 hours')::int AS email_day,
-    count(*) FILTER (WHERE ${ipHash} IS NOT NULL AND metadata->>'abuse_ip_hash'=${ipHash} AND occurred_at > now() - interval '1 hour')::int AS ip_hour,
-    count(*) FILTER (WHERE ${ipHash} IS NOT NULL AND metadata->>'abuse_ip_hash'=${ipHash} AND occurred_at > now() - interval '24 hours')::int AS ip_day
-    FROM lead_events
-    WHERE event_name='lead_captured'
-      AND occurred_at > now() - interval '24 hours'
-      AND (email=${email} OR (${ipHash} IS NOT NULL AND metadata->>'abuse_ip_hash'=${ipHash}))`;
+  let rows;
+
+  if (ipHash) {
+    rows = await sql`SELECT
+      count(*) FILTER (WHERE email=${email} AND occurred_at > now() - interval '1 hour')::int AS email_hour,
+      count(*) FILTER (WHERE email=${email} AND occurred_at > now() - interval '24 hours')::int AS email_day,
+      count(*) FILTER (WHERE metadata->>'abuse_ip_hash'=${ipHash} AND occurred_at > now() - interval '1 hour')::int AS ip_hour,
+      count(*) FILTER (WHERE metadata->>'abuse_ip_hash'=${ipHash} AND occurred_at > now() - interval '24 hours')::int AS ip_day
+      FROM lead_events
+      WHERE event_name='lead_captured'
+        AND occurred_at > now() - interval '24 hours'
+        AND (email=${email} OR metadata->>'abuse_ip_hash'=${ipHash})`;
+  } else {
+    rows = await sql`SELECT
+      count(*) FILTER (WHERE occurred_at > now() - interval '1 hour')::int AS email_hour,
+      count(*)::int AS email_day,
+      0::int AS ip_hour,
+      0::int AS ip_day
+      FROM lead_events
+      WHERE event_name='lead_captured'
+        AND occurred_at > now() - interval '24 hours'
+        AND email=${email}`;
+  }
+
   const counts = rows[0] || {};
   const limited = Number(counts.email_hour || 0) >= 5
     || Number(counts.email_day || 0) >= 12
