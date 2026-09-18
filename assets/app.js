@@ -1,4 +1,4 @@
-// Meta Pixel — PoonthaiDigital site-wide PageView tracking
+// Meta Pixel — PoonthaiDigital PageView + privacy-safe funnel tracking
 (function initMetaPixel(){
   if (window.__pdMetaPixelLoaded) return;
   window.__pdMetaPixelLoaded = true;
@@ -39,6 +39,22 @@ try {
 }
 const pdAttributionClean = Object.keys(pdStoredAttribution).length ? pdStoredAttribution : pdCurrentAttribution;
 
+// Send only non-sensitive funnel metadata to Meta. Never include email addresses
+// or calculator inputs in Pixel events.
+const trackMeta = (name, data = {}) => {
+  try {
+    if (typeof window.fbq !== 'function') return;
+    const safeData = Object.fromEntries(Object.entries({
+      ...data,
+      page_path: window.location.pathname,
+      ...pdAttributionClean
+    }).filter(([,v]) => v !== undefined && v !== null && v !== ''));
+    if (name === 'Lead') window.fbq('track','Lead',safeData);
+    else window.fbq('trackCustom',name,safeData);
+  } catch (_) {}
+};
+window.pdTrackMeta = trackMeta;
+
 const postSafeEvent = (url, payload) => {
   try {
     const body = JSON.stringify(payload);
@@ -54,6 +70,8 @@ const trackVa = (name, data = {}) => {
       if (name === 'Etsy Click') window.gtag('event','etsy_click',{product:data.product || 'shop',page_path:data.sourcePath || window.location.pathname,...pdAttributionClean});
     }
   } catch (_) {}
+  if (name === 'Tool Used' && data.tool) trackMeta('ToolUsed',{tool:data.tool});
+  if (name === 'Etsy Click') trackMeta('EtsyClick',{product:data.product || 'shop',source_path:data.sourcePath || window.location.pathname});
   if (name === 'Tool Used' && data.tool) postSafeEvent('/api/tool-use/', { tool:data.tool, sourcePath:window.location.pathname, ...pdAttributionClean });
 };
 
