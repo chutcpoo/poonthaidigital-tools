@@ -1,6 +1,7 @@
 import { Resend } from 'resend';
 import { STARTERS } from './_starter-config.js';
 import { deliveryEmail, nurtureEmails } from './_email-content.js';
+import { sendMetaCapiEvent } from './_meta-capi.js';
 import { abuseIpHash, checkLeadRateLimit, enqueueNurture, isUnsubscribed, makeDownloadToken, neonInsert, parseBody, requestBaseUrl, validEmail } from './_lead-utils.js';
 
 function allowedOrigin(req) {
@@ -47,6 +48,26 @@ export default async function handler(req, res) {
     await neonInsert('leads', lead);
     await neonInsert('lead_events', { email, lead_magnet:slug, event_name:'lead_captured', source_path:sourcePath, metadata:{ marketing_consent:marketingConsent, ...attribution, ...(ipHash ? { abuse_ip_hash:ipHash } : {}) } }).catch(()=>{});
     if (marketingConsent) await neonInsert('marketing_consents', { email, lead_magnet:slug, source_path:sourcePath, privacy_version:'2026-09-16' }).catch(()=>{});
+
+    const eventSourceUrl = `https://poonthaidigital.com${sourcePath.split('?')[0]}`;
+    const leadEventId = body.lead_event_id ? String(body.lead_event_id).slice(0,120) : null;
+    const marketingEventId = body.marketing_event_id ? String(body.marketing_event_id).slice(0,120) : null;
+    if (leadEventId) {
+      await sendMetaCapiEvent(req, {
+        eventName:'Lead',
+        eventId:leadEventId,
+        eventSourceUrl,
+        customData:{ content_name:slug, ...attribution }
+      }).catch(() => {});
+    }
+    if (marketingConsent && marketingEventId) {
+      await sendMetaCapiEvent(req, {
+        eventName:'MarketingOptIn',
+        eventId:marketingEventId,
+        eventSourceUrl,
+        customData:{ content_name:slug, ...attribution }
+      }).catch(() => {});
+    }
 
     const token = makeDownloadToken(slug);
     const baseUrl = requestBaseUrl(req);

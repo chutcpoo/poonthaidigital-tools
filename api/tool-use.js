@@ -1,4 +1,5 @@
-export default function handler(req, res) {
+import { sendMetaCapiEvent } from './_meta-capi.js';
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).end();
@@ -29,6 +30,17 @@ export default function handler(req, res) {
   };
 
   console.log(JSON.stringify({ event:'tool_used', tool, sourcePath, ...attribution, at:new Date().toISOString() }));
+
+  const eventId = payload.event_id ? String(payload.event_id).slice(0,120) : null;
+  if (eventId) {
+    await sendMetaCapiEvent(req, {
+      eventName:'ToolUsed',
+      eventId,
+      eventSourceUrl:`https://poonthaidigital.com${sourcePath.split('?')[0]}`,
+      customData:{ tool, ...attribution }
+    }).catch(() => {});
+  }
+
   res.setHeader('Cache-Control', 'no-store');
   return res.status(204).end();
 }
