@@ -32,6 +32,7 @@ Problem-solving guides:
 - `/guides/restaurant-shift-handoff-checklist/`
 - `/guides/restaurant-food-waste-log/`
 - `/guides/bakery-production-schedule/`
+- `/guides/professional-organizer-client-project-workflow/`
 
 ## Product / destination mapping
 
@@ -43,7 +44,7 @@ Problem-solving guides:
 - Private Chef Spreadsheet → Etsy Listing `4569445414`
 - Home Bakery Operations → Etsy Listing `4566738686`
 - Bakery Production Schedule & Capacity → Etsy Listing `4573789186`
-- Professional Organizer → Etsy Listing `4568730165` (direct Etsy fallback while no exact first-party destination exists)
+- Professional Organizer → `/guides/professional-organizer-client-project-workflow/` → Etsy Listing `4568730165`
 
 ## SEO / discovery implementation
 
