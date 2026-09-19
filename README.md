@@ -1,48 +1,76 @@
-# PoonthaiDigital Tools — SEO Architecture V2
+# PoonthaiDigital Tools — Search, Social & AI Discovery Architecture
 
-Primary domain: `poonthaidigital.com`
+Primary domain: https://poonthaidigital.com/
 
 Business model:
-**Google/Search/Social → Free Tool → Useful Result → Matching Etsy Digital Product**
+**Search / Social / AI discovery → useful guide or free tool → practical result → exact matching Etsy digital product**
 
 ## Production routes
 
+Core:
 - `/`
 - `/tools/`
+- `/guides/`
+- `/about/`
+
+Free tools:
 - `/inventory-reorder-calculator/`
+- `/food-waste-cost-calculator/`
 - `/bakery-production-capacity-calculator/`
 - `/boba-shop-inventory-calculator/`
 - `/restaurant-opening-closing-checklist/`
+- `/coffee-shop-opening-closing-checklist/`
+- `/cafe-cleaning-schedule-planner/`
+- `/private-chef-job-cost-calculator/`
+
+Niche hubs:
 - `/restaurant-tools/`
 - `/boba-shop-tools/`
 - `/bakery-tools/`
 
-## Conversion mapping
+Problem-solving guides:
+- `/guides/restaurant-shift-handoff-checklist/`
+- `/guides/restaurant-food-waste-log/`
+- `/guides/bakery-production-schedule/`
 
-- Inventory Reorder Calculator → Etsy Listing 4561821192
-- Bakery Capacity Calculator → Etsy Listing 4566738686
-- Boba Ingredient Calculator → Etsy Listing 4560696421
-- Restaurant Checklist Starter → Etsy Listing 4561819638
+## Product / destination mapping
 
-## SEO implementation
+- Inventory + Waste → Etsy Listing `4561821192`
+- Restaurant Daily Operations → Etsy Listing `4561819638`
+- Coffee Shop Opening & Closing → Etsy Listing `4561793463`
+- Cafe Cleaning Checklist & Schedule → Etsy Listing `4561795303`
+- Boba Shop Operations → Etsy Listing `4560696421`
+- Private Chef Spreadsheet → Etsy Listing `4569445414`
+- Home Bakery Operations → Etsy Listing `4566738686`
+- Bakery Production Schedule & Capacity → Etsy Listing `4573789186`
+- Professional Organizer → Etsy Listing `4568730165` (direct Etsy fallback while no exact first-party destination exists)
 
-- Unique title + meta description per page
+## SEO / discovery implementation
+
+- Unique title + meta description per production page
 - Canonical URLs on `https://poonthaidigital.com`
-- Semantic H1/H2 structure
-- WebSite / CollectionPage / WebApplication structured data
-- `robots.txt`
-- `sitemap.xml`
-- crawlable internal links
-- niche hub pages
-- no fabricated price / sales / review claims
+- Crawlable semantic H1/H2 structure
+- WebSite / Organization / CollectionPage / WebApplication / Article / Breadcrumb structured data where appropriate
+- `robots.txt` allows crawling and points to `sitemap.xml`
+- XML sitemap includes current first-party routes
+- Problem-solving Guide → related Tool → exact Product internal-link architecture
+- GA4 and Vercel Analytics on production
+- UTM-preserving Facebook → website → Etsy funnel
+- Organization entity links to the Etsy shop and Facebook Page
+- No fabricated prices, sales, reviews, rankings, guarantees or unsupported claims
 
-## Deployment target
+## Governance
+
+- Google Drive is the canonical operational source of truth.
+- Etsy is not modified by website/search/social maintenance unless separately authorized.
+- Keep one primary search intent per page and avoid duplicate-intent thin pages.
+- Expand content only from buyer-problem evidence or measured search signals.
+- Prefer useful original tools, examples and workflows over generic high-volume blogging.
+
+## Deployment
 
 GitHub repo: `chutcpoo/poonthaidigital-tools`
 Vercel project: `poonthaidigital-tools`
-Production domain: `poonthaidigital.com`
-
-## Important
+Production domain: `https://poonthaidigital.com/`
 
 Etsy remains checkout + digital delivery.
-No second checkout is added in V2.
