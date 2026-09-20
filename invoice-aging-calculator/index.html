@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Free Invoice Aging Calculator | Days Overdue & Aging Bucket</title>
+<meta name="description" content="Free invoice aging calculator for small businesses. Enter a due date, as-of date and remaining balance to see days overdue and the Current, 1-30, 31-60, 61-90 or 90+ aging bucket.">
+<link rel="canonical" href="https://poonthaidigital.com/invoice-aging-calculator/">
+<meta name="robots" content="index,follow,max-image-preview:large"><meta name="theme-color" content="#16324F">
+<link rel="icon" href="/assets/poonthaidigital-logo.svg" type="image/svg+xml">
+<meta property="og:type" content="website"><meta property="og:title" content="Free Invoice Aging Calculator | PoonthaiDigital">
+<meta property="og:description" content="Calculate days overdue and the invoice aging bucket from a due date and remaining balance. Free, browser-based and no signup required.">
+<meta property="og:url" content="https://poonthaidigital.com/invoice-aging-calculator/"><meta property="og:site_name" content="PoonthaiDigital">
+<meta property="og:image" content="https://poonthaidigital.com/assets/pdt-ipt-001-invoice-payment-tracker.png"><meta property="og:image:alt" content="Invoice aging and follow-up workflow">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Free Invoice Aging Calculator">
+<meta name="twitter:description" content="See days overdue and the Current, 1-30, 31-60, 61-90 or 90+ aging bucket.">
+<meta name="twitter:image" content="https://poonthaidigital.com/assets/pdt-ipt-001-invoice-payment-tracker.png">
+<link rel="stylesheet" href="/assets/styles.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Invoice Aging Calculator","url":"https://poonthaidigital.com/invoice-aging-calculator/","applicationCategory":"BusinessApplication","operatingSystem":"Any","isAccessibleForFree":true,"description":"Free browser-based calculator for invoice days overdue and common accounts-receivable aging buckets.","publisher":{"@type":"Organization","name":"PoonthaiDigital","url":"https://poonthaidigital.com/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://poonthaidigital.com/"},{"@type":"ListItem","position":2,"name":"Free Tools","item":"https://poonthaidigital.com/tools/"},{"@type":"ListItem","position":3,"name":"Invoice Aging Calculator","item":"https://poonthaidigital.com/invoice-aging-calculator/"}]}</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0299KE0RD0"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-0299KE0RD0');</script>
+</head>
+<body>
+<header><div class="wrap"><nav><a class="brand" href="/"><span class="brandmark">P</span><span>PoonthaiDigital Tools</span></a><div class="navlinks"><a href="/tools/">Free Tools</a><a href="/guides/">Guides</a><a href="/about/">About</a><a href="/catalog-status/" class="btn btn-primary">Catalog status</a></div></nav></div></header>
+<div class="wrap breadcrumbs"><a href="/">Home</a> / <a href="/tools/">Free Tools</a> / Invoice Aging Calculator</div>
+<main>
+<section><div class="wrap hero-grid">
+<div><span class="eyebrow">FREE INVOICE TOOL</span><h1 class="page-title">Invoice Aging Calculator</h1><p class="lede">Enter the invoice due date, the date you are reviewing it, and the remaining unpaid balance. The calculator shows whether the invoice is current, paid or overdue — plus the common aging bucket.</p><p class="small">Runs in your browser • No signup • Your calculator inputs are not sent in analytics events</p></div>
+<div class="form-card">
+<div class="form-grid">
+<label>Invoice due date<input id="agingDueDate" type="date"></label>
+<label>As-of date<input id="agingAsOf" type="date"></label>
+<label style="grid-column:1/-1">Remaining balance (USD)<input id="agingBalance" type="number" min="0" step="0.01" placeholder="e.g. 500"></label>
+</div>
+<div class="actions"><button class="btn btn-primary" onclick="calcInvoiceAging()">Calculate Aging</button></div>
+<div class="result" id="result" aria-live="polite">Enter the due date and remaining balance to calculate the invoice aging status.</div>
+<div class="notice">This is an operational planning tool. Aging policies used by your accountant, software, lender or business may differ.</div>
+</div></div></section>
+
+<section class="content-section"><div class="wrap prose">
+<span class="eyebrow">HOW IT WORKS</span><h2>What does invoice aging measure?</h2>
+<p>Invoice aging groups an <strong>unpaid remaining balance</strong> by how long it has been past its due date. It should not be confused with the number of days since the invoice was created. For a simple operational view, the due date is the important reference point.</p>
+<div class="formula-box"><strong>Days overdue = As-of date − Due date</strong><br>Only when the remaining balance is greater than zero and the due date has already passed.</div>
+
+<h2>Common aging buckets</h2>
+<div class="grid-3 compact-grid">
+<div class="mini-card"><strong>Current</strong><span>Not yet overdue, including invoices due today.</span></div>
+<div class="mini-card"><strong>1–30 days</strong><span>Past due by 1 through 30 days.</span></div>
+<div class="mini-card"><strong>31–60 days</strong><span>Past due by 31 through 60 days.</span></div>
+<div class="mini-card"><strong>61–90 days</strong><span>Past due by 61 through 90 days.</span></div>
+<div class="mini-card"><strong>90+ days</strong><span>More than 90 days past due.</span></div>
+<div class="mini-card"><strong>Paid</strong><span>Remaining balance is zero, so it no longer belongs in unpaid aging.</span></div>
+</div>
+
+<h2>Partial payments do not reset the due date</h2>
+<p>If a client pays part of an invoice, the calculator ages the <strong>remaining unpaid balance</strong> against the original due date you enter. For example, if a $1,200 invoice has $500 left unpaid and is 18 days past due, the aging bucket is 1–30 days and the amount currently exposed to that bucket is $500.</p>
+
+<h2>What should you do with the result?</h2>
+<p>Use the result to organize a review queue. Older overdue items may deserve attention sooner, but aging by itself does not decide what message to send, whether a fee is allowed, or what collection action is appropriate. Those decisions depend on your agreement, customer relationship and applicable rules.</p>
+
+<div class="callout"><h3>Want the explanation before the calculator?</h3><p>Read the free guide to Current, 1–30, 31–60, 61–90 and 90+ aging buckets, with worked examples and common mistakes.</p><p><a href="/guides/invoice-aging-explained/" style="color:white">Read Invoice Aging Explained →</a></p></div>
+
+<h2>Need a repeatable invoice workflow?</h2>
+<p>If you are still building the underlying invoice and payment system, start with <a href="/guides/track-unpaid-invoices-partial-payments-excel/">How to Track Unpaid Invoices and Partial Payments in Excel</a>. It shows how to keep the invoice log, payment log, remaining balance and next follow-up date connected.</p>
+<p>If that job becomes repetitive, you can also review the <a href="/invoice-payment-tracker/">Invoice &amp; Payment Follow-Up Tracker</a>. The product page shows the real workbook, included files and product boundaries before you decide whether it is useful.</p>
+
+<div class="faq"><h2>Quick questions</h2>
+<details><summary>Is an invoice due today overdue?</summary><p>Not in this calculator. An invoice due on the as-of date remains Current. It becomes 1 day overdue on the following day if a balance is still unpaid.</p></details>
+<details><summary>What if the remaining balance is zero?</summary><p>The calculator returns Paid rather than an aging bucket because there is no unpaid balance left to age.</p></details>
+<details><summary>Does a partial payment change the aging bucket?</summary><p>The payment reduces the remaining balance. The aging bucket still uses the due date you entered unless your own business process uses a different rule.</p></details>
+</div>
+<p class="small">General workflow guidance only. This calculator is not accounting, tax, legal, lending or collections advice.</p>
+</div></section>
+</main>
+<footer><div class="wrap"><div class="footer-grid"><div><strong>PoonthaiDigital</strong><br><span>Practical planning tools, guides and digital operations templates for small businesses.</span></div><div class="footer-links"><a href="/tools/">Free Tools</a><a href="/guides/">Guides</a><a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/disclaimer/">Disclaimer</a><a href="https://www.facebook.com/profile.php?id=61594431540897" target="_blank" rel="noopener">Facebook ↗</a></div></div><p class="small">Planning aids only. Nothing on this site is legal, tax, accounting or collections advice.</p></div></footer>
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script><script defer src="https://cdn.vercel-insights.com/v1/script.js"></script><script src="/assets/app.js"></script>
+<script>document.addEventListener('DOMContentLoaded',()=>{const e=document.getElementById('agingAsOf');if(e&&!e.value){const d=new Date(),z=n=>String(n).padStart(2,'0');e.value=d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate());}});</script>
+</body></html>

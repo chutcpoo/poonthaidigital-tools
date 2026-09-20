@@ -157,6 +157,43 @@ function calcWasteCost(){
   document.getElementById('result').innerHTML=`<strong>Estimated daily waste cost: ${money(daily)}</strong><br>Weekly: ${money(weekly)}<br>Monthly estimate: ${money(monthly)}.`;
 }
 
+
+function calcInvoiceAging(){
+  const dueValue=document.getElementById('agingDueDate')?.value || '';
+  const asOfValue=document.getElementById('agingAsOf')?.value || '';
+  const balanceRaw=document.getElementById('agingBalance')?.value ?? '';
+  const result=document.getElementById('result');
+  const parseYmd=(value)=>{
+    const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+    if(!m) return null;
+    return Date.UTC(Number(m[1]),Number(m[2])-1,Number(m[3]));
+  };
+  const due=parseYmd(dueValue), asOf=parseYmd(asOfValue), balance=Number(balanceRaw);
+  if(due===null || asOf===null || balanceRaw==='' || !Number.isFinite(balance) || balance<0){
+    if(result) result.innerHTML='<strong>Please enter a valid due date, as-of date and non-negative remaining balance.</strong>';
+    return;
+  }
+  if(balance===0){
+    trackVa('Tool Used',{tool:'invoice_aging'});
+    if(result) result.innerHTML='<strong>Status: Paid</strong><br>Remaining balance is $0.00, so there is no unpaid amount to age.';
+    return;
+  }
+  if(asOf<due){
+    const daysUntil=Math.ceil((due-asOf)/86400000);
+    trackVa('Tool Used',{tool:'invoice_aging'});
+    if(result) result.innerHTML=`<strong>Status: Current</strong><br>Remaining balance: ${money(balance)}<br>${daysUntil} day${daysUntil===1?'':'s'} until the due date.<br>Aging bucket: Current.`;
+    return;
+  }
+  const days=Math.floor((asOf-due)/86400000);
+  let bucket='Current', status=days===0?'Due today':'Current';
+  if(days>=1 && days<=30){bucket='1–30 days';status='Overdue';}
+  else if(days<=60 && days>=31){bucket='31–60 days';status='Overdue';}
+  else if(days<=90 && days>=61){bucket='61–90 days';status='Overdue';}
+  else if(days>90){bucket='90+ days';status='Overdue';}
+  trackVa('Tool Used',{tool:'invoice_aging'});
+  if(result) result.innerHTML=`<strong>Status: ${status}</strong><br>Remaining balance: ${money(balance)}<br>Days overdue: ${days}<br>Aging bucket: ${bucket}.`;
+}
+
 const etsyProductFromUrl = (url) => {
   if (url.includes('4578945050')) return 'PDT-IPT-001';
   return 'shop';
