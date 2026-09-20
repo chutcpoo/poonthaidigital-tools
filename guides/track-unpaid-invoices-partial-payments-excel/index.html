@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How to Track Unpaid Invoices in Excel | PoonthaiDigital</title>
+<meta name="description" content="A free step-by-step guide to track unpaid invoices, partial payments, overdue balances and follow-up dates in Excel without building a complicated system.">
+<link rel="canonical" href="https://poonthaidigital.com/guides/track-unpaid-invoices-partial-payments-excel/">
+<meta name="robots" content="index,follow,max-image-preview:large"><meta name="theme-color" content="#16324F">
+<link rel="icon" href="/assets/poonthaidigital-logo.svg" type="image/svg+xml">
+<meta property="og:type" content="article"><meta property="og:title" content="How to Track Unpaid Invoices and Partial Payments in Excel">
+<meta property="og:description" content="Build a simple invoice follow-up system in Excel: invoice log, payment log, remaining balance, aging and next action.">
+<meta property="og:url" content="https://poonthaidigital.com/guides/track-unpaid-invoices-partial-payments-excel/">
+<meta property="og:site_name" content="PoonthaiDigital"><meta property="og:image" content="https://poonthaidigital.com/assets/pdt-ipt-001-invoice-payment-tracker.png">
+<meta property="og:image:alt" content="Invoice tracking workflow with invoices, payments and follow-up">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="How to Track Unpaid Invoices in Excel">
+<meta name="twitter:description" content="A practical free workflow for unpaid invoices, partial payments, overdue balances and follow-up dates.">
+<meta name="twitter:image" content="https://poonthaidigital.com/assets/pdt-ipt-001-invoice-payment-tracker.png">
+<link rel="stylesheet" href="/assets/styles.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Track Unpaid Invoices and Partial Payments in Excel","description":"A practical free guide to tracking invoices, partial payments, remaining balances, overdue aging and follow-up dates in Excel.","datePublished":"2026-09-20","dateModified":"2026-09-20","mainEntityOfPage":"https://poonthaidigital.com/guides/track-unpaid-invoices-partial-payments-excel/","author":{"@type":"Organization","name":"PoonthaiDigital","url":"https://poonthaidigital.com/"},"publisher":{"@type":"Organization","name":"PoonthaiDigital","url":"https://poonthaidigital.com/","logo":{"@type":"ImageObject","url":"https://poonthaidigital.com/assets/poonthaidigital-logo.svg"}},"image":"https://poonthaidigital.com/assets/pdt-ipt-001-invoice-payment-tracker.png"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://poonthaidigital.com/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://poonthaidigital.com/guides/"},{"@type":"ListItem","position":3,"name":"Track Unpaid Invoices in Excel","item":"https://poonthaidigital.com/guides/track-unpaid-invoices-partial-payments-excel/"}]}</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0299KE0RD0"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-0299KE0RD0');</script>
+</head>
+<body>
+<header><div class="wrap"><nav><a class="brand" href="/"><span class="brandmark">P</span><span>PoonthaiDigital Tools</span></a><div class="navlinks"><a href="/tools/">Free Tools</a><a href="/guides/">Guides</a><a href="/about/">About</a><a href="/catalog-status/">Catalog status</a></div></nav></div></header>
+<div class="wrap breadcrumbs"><a href="/">Home</a> / <a href="/guides/">Guides</a> / Track Unpaid Invoices in Excel</div>
+<main>
+<section class="hero"><div class="wrap hero-grid"><div><span class="eyebrow">FREE SMALL-BUSINESS GUIDE</span><h1>How to track unpaid invoices and partial payments in Excel</h1><p class="lede">You do not need a complicated finance system just to answer four everyday questions: Who owes you money? How much is still unpaid? How late is it? What should you follow up next?</p><div class="actions"><a class="btn btn-primary" href="#starter-system">Build the free starter system</a><a class="btn btn-secondary" href="#weekly-review">See the weekly routine</a></div><p class="small">Published Sep 20, 2026 · Free guide · No signup required</p></div><aside class="hero-card"><h3>What you will build</h3><p class="hero-card-intro">A simple Excel workflow you can create yourself.</p><div class="flow"><div class="flow-row"><span class="num">1</span><span>One invoice log for what customers owe.</span></div><div class="flow-row"><span class="num">2</span><span>One payment log for partial and full payments.</span></div><div class="flow-row"><span class="num">3</span><span>A weekly review for overdue items and next actions.</span></div></div></aside></div></section>
+
+<section id="starter-system" class="content-section"><div class="wrap prose">
+<h2>Start with two tables, not one giant spreadsheet</h2>
+<p>The easiest way to lose track of receivables is to keep overwriting the same row every time a customer pays. A cleaner setup is to separate <strong>invoices</strong> from <strong>payments</strong>. The invoice table tells you what was billed. The payment table records every payment event. A shared Invoice ID connects them.</p>
+
+<h3>Table 1: Invoice log</h3>
+<p>Create an Excel sheet called <strong>Invoices</strong> with these starter columns:</p>
+<ul>
+<li><strong>Invoice ID</strong> — a unique value such as INV-1001.</li>
+<li><strong>Client</strong> — customer or business name.</li>
+<li><strong>Invoice Date</strong> — when the invoice was issued.</li>
+<li><strong>Due Date</strong> — the agreed payment due date.</li>
+<li><strong>Invoice Amount</strong> — the original amount billed.</li>
+<li><strong>Payments Received</strong> — total payments linked to this invoice.</li>
+<li><strong>Remaining Balance</strong> — invoice amount minus payments received.</li>
+<li><strong>Days Overdue</strong> — how many days past the due date, if still unpaid.</li>
+<li><strong>Next Follow-Up Date</strong> — when you plan to review or contact the client again.</li>
+<li><strong>Notes</strong> — short context such as “client said payment Friday.”</li>
+</ul>
+
+<h3>Table 2: Payment log</h3>
+<p>Create another sheet called <strong>Payments</strong>. Use one row per payment, even when several payments belong to the same invoice:</p>
+<ul>
+<li><strong>Payment ID</strong></li>
+<li><strong>Payment Date</strong></li>
+<li><strong>Invoice ID</strong></li>
+<li><strong>Payment Amount</strong></li>
+<li><strong>Method or Reference</strong> — optional, if useful for your workflow.</li>
+<li><strong>Notes</strong> — optional.</li>
+</ul>
+<p>This structure makes partial payments much easier. You never need to erase an earlier payment just because a second payment arrives.</p>
+
+<h2>Calculate the amount still unpaid</h2>
+<p>If your payment log uses Invoice ID in one column and Payment Amount in another, Excel can total every payment for an invoice with <strong>SUMIFS</strong>. The idea is simple:</p>
+<div class="formula-box"><strong>Payments Received</strong> = sum every payment where Payment Log Invoice ID matches this invoice.<br><strong>Remaining Balance</strong> = Invoice Amount − Payments Received.</div>
+<p>For example, imagine invoice <strong>INV-1004</strong> is $1,200. The client pays $400, then later pays $300. Your payment log contains two rows. Total payments are $700, so the remaining balance is $500. You keep the full history without changing the original $1,200 invoice amount.</p>
+
+<h2>Do not use “Paid / Unpaid” as your only status</h2>
+<p>A binary status hides the work that actually needs attention. A useful invoice review should distinguish at least these situations:</p>
+<div class="grid-3 compact-grid">
+<div class="mini-card"><strong>Not due yet</strong><span>The invoice is open, but the due date has not arrived.</span></div>
+<div class="mini-card"><strong>Due or overdue</strong><span>There is still a balance and the due date has arrived or passed.</span></div>
+<div class="mini-card"><strong>Paid</strong><span>The remaining balance is zero.</span></div>
+</div>
+<p>You can add a “Due Soon” state if your business benefits from reviewing invoices a few days before the due date. The goal is not to create a fancy dashboard. The goal is to know which invoices need attention today.</p>
+
+<h2>Use aging to prioritize, not to scare customers</h2>
+<p>Invoice aging simply groups unpaid balances by how long they have been outstanding. A common operational view is Current, 1–30 days overdue, 31–60, 61–90 and 90+ days. Those buckets help you review older balances first and see whether late payments are becoming a pattern.</p>
+<p>If you calculate days overdue in Excel, keep the logic tied to the remaining balance. An invoice with a zero balance should not continue looking overdue just because its due date is in the past.</p>
+<div class="formula-box">A practical rule: if Remaining Balance = 0, mark the item Paid. Otherwise compare Today with Due Date and calculate overdue days only when Today is later than Due Date.</div>
+<p>Aging is an organizational signal, not legal or collections advice. Your communication and collection practices should follow the agreements and laws that apply to your business.</p>
+
+<h2>Track the next action, not just the last message</h2>
+<p>Notes like “emailed client” are useful history, but they do not answer the next question. Add fields that make the future action visible:</p>
+<ul>
+<li>Last Follow-Up Date</li>
+<li>Next Follow-Up Date</li>
+<li>Promise-to-Pay Date, if a client gives one</li>
+<li>Short Follow-Up Note</li>
+</ul>
+<p>When you open the spreadsheet, you should be able to filter for “next follow-up date is today or earlier” and immediately see your work list.</p>
+
+<h2 id="weekly-review">A simple weekly invoice follow-up routine</h2>
+<p>For a small service business, a short recurring review is often more useful than constantly checking the sheet. A practical weekly rhythm can be:</p>
+<ol>
+<li><strong>Check new payments.</strong> Add each payment to the payment log.</li>
+<li><strong>Review remaining balances.</strong> Confirm that paid invoices reached zero.</li>
+<li><strong>Review due and overdue invoices.</strong> Sort by overdue days or aging bucket.</li>
+<li><strong>Check promised payment dates.</strong> See which commitments are due.</li>
+<li><strong>Set the next follow-up date.</strong> Give every open item a clear next review point.</li>
+<li><strong>Look at the total pattern.</strong> Are overdue balances growing? Are the same clients repeatedly late?</li>
+</ol>
+<p>This routine turns the spreadsheet into a work queue instead of a storage file.</p>
+
+<h2>Five mistakes that make invoice spreadsheets harder to trust</h2>
+<h3>1. Reusing invoice IDs</h3><p>If two invoices share the same ID, payments can roll up to the wrong record. Keep Invoice ID unique.</p>
+<h3>2. Typing the total paid directly into the invoice row</h3><p>This destroys payment history. Record payment events separately, then calculate the total.</p>
+<h3>3. Overwriting the original invoice amount</h3><p>Keep the amount billed separate from the amount received and the remaining balance.</p>
+<h3>4. Tracking “overdue” without a due date</h3><p>You cannot calculate meaningful overdue days unless the underlying due date is reliable.</p>
+<h3>5. Recording the last contact but no next action</h3><p>A history log is useful, but a next follow-up date is what keeps the workflow moving.</p>
+
+<h2>Build a usable version in 15 minutes</h2>
+<p>If you are starting from nothing, do not build charts first. Create the two tables, enter five real invoices, enter any payments already received, calculate remaining balances, then add a next follow-up date to every invoice that is still open. Once that works, add aging buckets or a dashboard only if they help you make a decision faster.</p>
+
+<div class="callout"><h3>Want to build it yourself first?</h3><p>Use the field list and routine above as your free starter system. You do not need to buy anything to use this workflow.</p></div>
+
+<h2>When a ready-made workbook may save time</h2>
+<p>If this becomes a recurring job and you would rather not build the formulas, aging view, monthly summary and dashboard yourself, PoonthaiDigital has a paid Excel version built around the same workflow. It includes separate invoice and payment logs, aging and follow-up fields, a monthly summary and dashboard.</p>
+<p><a href="/invoice-payment-tracker/">See exactly what the Invoice &amp; Payment Follow-Up Tracker includes</a> before deciding whether it is useful for you. The product page also explains what the workbook does <em>not</em> do.</p>
+
+<div class="faq"><h2>Quick questions</h2>
+<details><summary>Can I track partial payments in Excel?</summary><p>Yes. Keep each payment as its own row in a payment log and connect it to the invoice with Invoice ID. Then total the payments for each invoice.</p></details>
+<details><summary>Do I need accounting software to use this method?</summary><p>No for basic operational tracking, but this spreadsheet method does not replace accounting, tax, payment-processing or legal systems your business may require.</p></details>
+<details><summary>What should I review first when invoices are overdue?</summary><p>Start with the remaining balance, due date, overdue age, recent payment activity and any promised payment date. Then decide the appropriate next action for your situation.</p></details>
+</div>
+<p class="small">This guide is for general business organization and workflow planning. It is not accounting, tax, legal or collections advice.</p>
+</div></section>
+</main>
+<footer><div class="wrap"><div class="footer-grid"><div><strong>PoonthaiDigital</strong><br><span>Practical planning tools, guides and digital operations templates for small businesses.</span></div><div class="footer-links"><a href="/tools/">Free Tools</a><a href="/guides/">Guides</a><a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/disclaimer/">Disclaimer</a><a href="https://www.facebook.com/profile.php?id=61594431540897" target="_blank" rel="noopener">Facebook ↗</a><a href="/catalog-status/">Catalog status</a></div></div><p class="small">Planning aids only. Nothing on this site is legal, tax, accounting or collections advice.</p></div></footer>
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script><script defer src="https://cdn.vercel-insights.com/v1/script.js"></script><script src="/assets/app.js"></script>
+</body></html>
