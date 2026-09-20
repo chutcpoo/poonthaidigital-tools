@@ -37,7 +37,10 @@ jobs:
           curl -fsS "$BASE/robots.txt" -o /tmp/robots.txt
           curl -fsS "$BASE/sitemap.xml" -o /tmp/sitemap.xml
           curl -fsS "$BASE/assets/app.js" -o /tmp/app.js
-          test "$(grep -c '<loc>' /tmp/sitemap.xml)" -eq 20
+          URL_COUNT="$(grep -c '<loc>' /tmp/sitemap.xml)"
+          test "$URL_COUNT" -ge 28
+          grep -q '<loc>https://poonthaidigital.com/invoice-cash-flow/</loc>' /tmp/sitemap.xml
+          grep -q '<loc>https://poonthaidigital.com/guides/overdue-invoice-follow-up-process/</loc>' /tmp/sitemap.xml
           grep -q 'Sitemap: https://poonthaidigital.com/sitemap.xml' /tmp/robots.txt
           grep -q 'G-0299KE0RD0' /tmp/home.html
           grep -q 'etsy_click' /tmp/app.js
@@ -65,6 +68,21 @@ jobs:
             grep -q 'application/ld+json' "/tmp/$path.html"
           done
           echo "Four new tool routes are live with GA4, canonical and JSON-LD."
+
+      - name: Verify invoice knowledge cluster
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://poonthaidigital.com"
+          curl -fsS "$BASE/invoice-cash-flow/" -o /tmp/invoice-hub.html
+          curl -fsS "$BASE/guides/overdue-invoice-follow-up-process/" -o /tmp/invoice-followup.html
+          grep -q 'Invoice, Late Payment & Cash Flow Guides' /tmp/invoice-hub.html
+          grep -q '/guides/overdue-invoice-follow-up-process/' /tmp/invoice-hub.html
+          grep -q '<link rel="canonical" href="https://poonthaidigital.com/invoice-cash-flow/">' /tmp/invoice-hub.html
+          grep -q '<link rel="canonical" href="https://poonthaidigital.com/guides/overdue-invoice-follow-up-process/">' /tmp/invoice-followup.html
+          grep -q 'G-0299KE0RD0' /tmp/invoice-hub.html
+          grep -q 'G-0299KE0RD0' /tmp/invoice-followup.html
+          echo "Invoice knowledge cluster routes passed."
 
       - name: Verify live invoice product destination
         shell: bash
