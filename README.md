@@ -3,7 +3,7 @@
 Primary domain: https://poonthaidigital.com/
 
 Reset date: 2026-09-20
-Current paid catalog state: EMPTY_CATALOG / RESET
+Current paid catalog state: 1 LIVE VALIDATED PRODUCT / POST_RESET_PRODUCT_001
 Previous Etsy listing IDs: HISTORICAL ONLY / NON-EXECUTABLE
 
 Business model during reset:
@@ -17,6 +17,7 @@ Core:
 - `/guides/`
 - `/about/`
 - `/catalog-status/` (noindex, follow)
+- `/invoice-payment-tracker/` (live paid-product destination)
 
 Free tools:
 - `/inventory-reorder-calculator/`
@@ -43,7 +44,7 @@ Problem-solving guides:
 
 - No previous Etsy listing ID is treated as live.
 - Public pages must not send visitors to deleted listing URLs.
-- Paid-product CTAs point only to `/catalog-status/` until a newly validated product is released.
+- Paid-product CTAs may point to a product only after that exact product is freshly validated and released. Unmatched historical product families remain routed to `/catalog-status/`.
 - Do not silently redirect a deleted product to an unrelated product.
 - Free tools and guides remain first-party resources and may continue to receive organic/social traffic.
 - New paid-product mapping is created only after fresh market validation, Product Truth, tester, final QC and Etsy release authorization.
@@ -68,7 +69,7 @@ Problem-solving guides:
 - GitHub `chutcpoo/poonthaidigital-tools` is code source truth.
 - Vercel project `poonthaidigital-tools` is deployment truth.
 - `poonthaidigital.com` is production web/funnel truth.
-- Etsy is READ-ONLY by default and has 0 live products after the reset.
+- Etsy is READ-ONLY by default for mutations. Current post-reset live catalog baseline is 1 validated product: PDT-IPT-001 / Listing 4578945050.
 - Keep one primary search intent per page and avoid duplicate-intent thin pages.
 - Expand content only from buyer-problem evidence or measured search signals.
 - Prefer useful original tools, examples and workflows over generic high-volume blogging.
@@ -79,4 +80,4 @@ GitHub repo: `chutcpoo/poonthaidigital-tools`
 Vercel project: `poonthaidigital-tools`
 Production domain: `https://poonthaidigital.com/`
 
-Paid commerce is paused until POST_RESET_PRODUCT_001 passes the full release gates.
+POST_RESET_PRODUCT_001 (PDT-IPT-001) passed the release gates and is live. Additional paid products remain gated one at a time.
