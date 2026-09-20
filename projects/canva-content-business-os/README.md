@@ -34,6 +34,8 @@ Build and sell original, editable Canva-based content systems independently from
 - Companion pack: 16EK0---2WS9TK3JtRhFwd_JAClTRKt4a1ycXvIxMiKw
 - Buyer START HERE: 1XIYIwe7SiOZU5o33YCXajAUQKzt9MGSc7R1Uuz2VyvI
 - Competitor benchmark: 152dEUlGp3vEe09OnA_AFXLnIgKPSF26-WBt9xsLre6o
+- Customer Companion Workbook R02 PDF: 10CX3fvHagMOwnbDsWXvfokSTh5dVFSqq
+- Single-Business License R01 PDF: 1lTof0VwOOZl6TyEYlUy5ke2AxLf7rHkm
 
 ## Exact companion resources
 - 30 captions
@@ -53,16 +55,21 @@ Total non-design resources: 165
 - This project does not use Etsy listing IDs or Etsy checkout.
 
 ## Release gates
-1. Canva final visual QC PASS
-2. Customer-safe Canva Template Links created from buyer masters
+1. Canva final visual QC
+2. Customer-safe Canva Template Links created from buyer masters — REQUIRED delivery route, especially if templates contain Canva Pro Content
 3. Buyer START HERE updated with final Template Links
-4. Companion Pack customer access tested
-5. Website preview QC PASS
-6. Checkout/delivery destination configured and tested
-7. Final Product Truth readback
-8. Production release authorization
-9. Production HTTP/canonical/indexability readback
-10. GSC inspection + tracking
+4. Companion Workbook R02 customer PDF — PASS / visually rendered + QC'd
+5. Single-Business License R01 — PASS
+6. Website preview QC — BLOCKED by current Vercel build-rate limit
+7. Checkout/delivery destination configured and tested
+8. Final Product Truth + Canva delivery compliance readback
+9. Production release authorization
+10. Production HTTP/canonical/indexability readback
+11. GSC inspection + tracking
 
 ## Product-truth rule
 Only publish claims, pricing, availability, credentials, guarantees, included files and usage rights that are verified for the current product.
+
+
+## Canva template-sale compliance note — checked 2026-09-21
+Canva Help Center states that original templates can use Free and Pro Content. If Pro Content is included, the editable template must be sold/delivered as a Canva template link rather than as a PDF or other template file. This project's release path is therefore Canva Template Link only for the editable designs. Restricted/Branded/Education/Editorial content remains subject to Canva's own rules.
