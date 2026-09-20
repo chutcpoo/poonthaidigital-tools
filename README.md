@@ -79,4 +79,9 @@ GitHub repo: `chutcpoo/poonthaidigital-tools`
 Vercel project: `poonthaidigital-tools`
 Production domain: `https://poonthaidigital.com/`
 
-Paid commerce is paused until POST_RESET_PRODUCT_001 passes the full release gates.
+Paid commerce remains paused until POST_RESET_PRODUCT_001 passes the full Etsy release gates.
+
+Preview-only release candidate route:
+- `/invoice-payment-follow-up-tracker/` — noindex, no live Etsy CTA, planned initial price $7.99, product truth synced to Excel-only V2.
+
+Do not merge or activate a paid CTA until authenticated Etsy protected-state verification and exact release authorization pass.
