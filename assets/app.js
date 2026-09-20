@@ -173,15 +173,15 @@ function calcInvoiceAging(){
     if(result) result.innerHTML='<strong>Please enter a valid due date, as-of date and non-negative remaining balance.</strong>';
     return;
   }
+  if(balance===0){
+    trackVa('Tool Used',{tool:'invoice_aging'});
+    if(result) result.innerHTML='<strong>Status: Paid</strong><br>Remaining balance is $0.00, so there is no unpaid amount to age.';
+    return;
+  }
   if(asOf<due){
     const daysUntil=Math.ceil((due-asOf)/86400000);
     trackVa('Tool Used',{tool:'invoice_aging'});
     if(result) result.innerHTML=`<strong>Status: Current</strong><br>Remaining balance: ${money(balance)}<br>${daysUntil} day${daysUntil===1?'':'s'} until the due date.<br>Aging bucket: Current.`;
-    return;
-  }
-  if(balance===0){
-    trackVa('Tool Used',{tool:'invoice_aging'});
-    if(result) result.innerHTML='<strong>Status: Paid</strong><br>Remaining balance is $0.00, so there is no unpaid amount to age.';
     return;
   }
   const days=Math.floor((asOf-due)/86400000);
