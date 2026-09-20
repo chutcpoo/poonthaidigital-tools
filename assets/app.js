@@ -158,15 +158,7 @@ function calcWasteCost(){
 }
 
 const etsyProductFromUrl = (url) => {
-  if (url.includes('4573789186')) return 'PDT-BPSC-001';
-  if (url.includes('4569445414')) return 'PDT-PCSO-001';
-  if (url.includes('4568730165')) return 'PDT-POGO-001';
-  if (url.includes('4566738686')) return 'PDT-HBOP-001';
-  if (url.includes('4560696421')) return 'PDT-BOBA-001';
-  if (url.includes('4561819638')) return 'PD-REST-003';
-  if (url.includes('4561793463')) return 'PD-COFFEE-002';
-  if (url.includes('4561795303')) return 'PD-CLEAN-004';
-  if (url.includes('4561821192')) return 'PD-STOCK-005';
+  if (url.includes('4578945050')) return 'PDT-IPT-001';
   return 'shop';
 };
 
