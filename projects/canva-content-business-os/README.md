@@ -60,7 +60,7 @@ Total non-design resources: 165
 3. Buyer START HERE updated with final Template Links
 4. Companion Workbook R02 customer PDF — PASS / visually rendered + QC'd
 5. Single-Business License R01 — PASS
-6. Website preview QC — BLOCKED by current Vercel build-rate limit
+6. Website preview QC — FRESH PREVIEW RETRY REQUESTED 2026-09-21; previous blocker was Vercel account build-rate limit
 7. Checkout/delivery destination configured and tested
 8. Final Product Truth + Canva delivery compliance readback
 9. Production release authorization
