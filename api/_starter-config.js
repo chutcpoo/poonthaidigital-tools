@@ -1,4 +1,14 @@
 export const STARTERS = {
+  'invoice-follow-up-starter': {
+    filename: 'PoonthaiDigital_Free_Invoice_Follow_Up_Starter.xlsx',
+    starterName: 'Free Invoice Follow-Up Starter',
+    paidName: 'Invoice Payment Tracker Excel',
+    etsyUrl: '/invoice-payment-tracker/',
+    freeScope: 'a simple unpaid-invoice review with balance, due date, aging, last contact and next follow-up',
+    advanced1: 'partial payments, promise-to-pay details and connected follow-up history across multiple invoices',
+    advanced2: 'aging views, monthly summary and dashboard review for a repeatable receivables workflow',
+    kind: 'invoice'
+  },
   'inventory-reorder-starter': {
     filename: 'PoonthaiDigital_Free_Inventory_Reorder_Starter.xlsx',
     starterName: 'Free Inventory Reorder Starter',
