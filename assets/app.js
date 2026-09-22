@@ -217,7 +217,8 @@ document.addEventListener('change', (event) => {
 
 const pdLeadRoutes=new Set([
   '/inventory-reorder-calculator/','/food-waste-cost-calculator/','/bakery-production-capacity-calculator/','/boba-shop-inventory-calculator/',
-  '/restaurant-opening-closing-checklist/','/coffee-shop-opening-closing-checklist/','/cafe-cleaning-schedule-planner/','/private-chef-job-cost-calculator/'
+  '/restaurant-opening-closing-checklist/','/coffee-shop-opening-closing-checklist/','/cafe-cleaning-schedule-planner/','/private-chef-job-cost-calculator/',
+  '/invoice-aging-calculator/','/free-resources/invoices/free-invoice-follow-up-starter-pack/'
 ]);
 if(pdLeadRoutes.has(window.location.pathname)){
   const script=document.createElement('script');

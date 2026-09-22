@@ -30,6 +30,7 @@ const CORE = {
   restaurant: ['Opening facility check','Opening equipment check','Pre-service readiness','Prep check','Temperature note','Cleaning check','Service issue note','Closing check','Manager verification','Shift handoff'],
   coffee: ['Unlock / facility check','Espresso machine readiness','Brew setup','Prep priority','Cleaning readiness','Stock spot-check','Cash / POS readiness','Opening sign-off','Closing reset','Shift handoff'],
   cleaning: ['List cleaning tasks','Choose frequency','Assign owner','Set due day','Mark complete','Add verification','Record issue','Record corrective action','Review weekly misses','Adjust next cycle'],
+  invoice: ['List open invoices','Record invoice and due dates','Record invoice amount','Record payments received','Review remaining balance','Check overdue age','Record last follow-up','Set next follow-up','Record promise-to-pay details','Choose the next action'],
   chef: ['Set basic business assumptions','Record client details','Create service record','Choose menu / service idea','Estimate food / material cost','Estimate labor / travel / add-ons','Build a quote','Create service plan','Create shopping / prep list','Record actuals and payments']
 };
 
@@ -44,6 +45,15 @@ function specializedRows(cfg) {
     for (let r = 5; r <= 14; r++) rows.push(rowXml(r, ['','','','','','',''], [3,3,3,3,0,3,3], {4:`C${r}*D${r}`}));
     rows.push(rowXml(16, ['','','','Total Waste Cost','','',''], [0,0,0,2,0,0,0], {4:'SUM(E5:E14)'}));
     return { rows, maxCol: 7 };
+  }
+  if (cfg.kind === 'invoice') {
+    const rows = [rowXml(4, ['Invoice ID','Client','Invoice Date','Due Date','Invoice Amount','Paid','Balance','Days Overdue','Status','Last Follow-Up','Next Follow-Up','Promise to Pay','Next Action'], [2,2,2,2,2,2,2,2,2,2,2,2,2])];
+    for (let r = 5; r <= 12; r++) rows.push(rowXml(r, [`INV-${String(r-4).padStart(3,'0')}`,'','','','','','','','','','','',''], [0,3,3,3,3,3,0,0,0,3,3,3,3], {
+      6:`MAX(0,E${r}-F${r})`,
+      7:`IF(G${r}=0,0,MAX(0,TODAY()-D${r}))`,
+      8:`IF(G${r}=0,"PAID",IF(D${r}="","ADD DUE DATE",IF(TODAY()<D${r},"CURRENT",IF(TODAY()=D${r},"DUE TODAY","OVERDUE"))))`
+    }));
+    return { rows, maxCol: 13 };
   }
   if (cfg.kind === 'bakery') {
     const rows = [rowXml(3, ['Available production minutes',480,'','','','',''], [2,3,0,0,0,0,0]), rowXml(5, ['Product','Order Qty','Units / Batch','Min / Batch','Batches Needed','Required Min','Capacity Status'], [2,2,2,2,2,2,2])];
