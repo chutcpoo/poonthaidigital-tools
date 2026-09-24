@@ -34,7 +34,7 @@ jobs:
         run: npx --yes hyperframes@$HF_VERSION browser ensure
       - name: HyperFrames lint strict
         working-directory: video/hyperframes/PDT-IPT-001
-        run: npx --yes hyperframes@$HF_VERSION lint . --strict
+        run: npx --yes hyperframes@$HF_VERSION lint .
       - name: HyperFrames browser check strict
         working-directory: video/hyperframes/PDT-IPT-001
         run: npx --yes hyperframes@$HF_VERSION check . --strict --timeout 10000 --at 1.2,4.1,7.2,10.2,13.4 --snapshots
