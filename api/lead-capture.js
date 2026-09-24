@@ -1,3 +1,4 @@
+import crypto from 'node:crypto';
 import { Resend } from 'resend';
 import { STARTERS } from './_starter-config.js';
 import { deliveryEmail, nurtureEmails } from './_email-content.js';
@@ -36,6 +37,7 @@ export default async function handler(req, res) {
   const attribution = { utm_source:body.utm_source ? String(body.utm_source).slice(0,120) : null, utm_medium:body.utm_medium ? String(body.utm_medium).slice(0,120) : null, utm_campaign:body.utm_campaign ? String(body.utm_campaign).slice(0,160) : null, utm_content:body.utm_content ? String(body.utm_content).slice(0,160) : null };
   const lead = { email, lead_magnet:slug, source_path:sourcePath, marketing_consent:marketingConsent, privacy_version:'2026-09-16', utm_source:attribution.utm_source, utm_medium:attribution.utm_medium, utm_campaign:attribution.utm_campaign };
   const ipHash = abuseIpHash(req);
+  const attributionId = crypto.randomUUID();
 
   try {
     const rate = await checkLeadRateLimit(email, ipHash);
@@ -46,7 +48,7 @@ export default async function handler(req, res) {
     }
 
     await neonInsert('leads', lead);
-    await neonInsert('lead_events', { email, lead_magnet:slug, event_name:'lead_captured', source_path:sourcePath, metadata:{ marketing_consent:marketingConsent, ...attribution, ...(ipHash ? { abuse_ip_hash:ipHash } : {}) } }).catch(()=>{});
+    await neonInsert('lead_events', { email, lead_magnet:slug, event_name:'lead_captured', source_path:sourcePath, metadata:{ attribution_id:attributionId, marketing_consent:marketingConsent, ...attribution, ...(ipHash ? { abuse_ip_hash:ipHash } : {}) } }).catch(()=>{});
     if (marketingConsent) await neonInsert('marketing_consents', { email, lead_magnet:slug, source_path:sourcePath, privacy_version:'2026-09-16' }).catch(()=>{});
 
     const eventSourceUrl = `https://poonthaidigital.com${sourcePath.split('?')[0]}`;
@@ -69,7 +71,7 @@ export default async function handler(req, res) {
       }).catch(() => {});
     }
 
-    const token = makeDownloadToken(slug);
+    const token = makeDownloadToken(slug, attributionId);
     const baseUrl = requestBaseUrl(req);
     const downloadUrl = `${baseUrl}/api/starter-download?token=${encodeURIComponent(token)}`;
     const unsubscribeUrl = `${baseUrl}/unsubscribe/?email=${encodeURIComponent(email)}`;
@@ -80,7 +82,7 @@ export default async function handler(req, res) {
     if (process.env.RESEND_API_KEY) {
       const resend = new Resend(process.env.RESEND_API_KEY);
       const delivery = deliveryEmail(cfg, downloadUrl);
-      const { data, error } = await resend.emails.send({ from:'PoonthaiDigital <hello@poonthaidigital.com>', to:[email], subject:delivery.subject, html:delivery.html, text:delivery.text, tags:[{name:'funnel',value:'starter_delivery'},{name:'starter',value:slug}] });
+      const { data, error } = await resend.emails.send({ from:'PoonthaiDigital <hello@poonthaidigital.com>', to:[email], subject:delivery.subject, html:delivery.html, text:delivery.text, tags:[{name:'funnel',value:'starter_delivery'},{name:'starter',value:slug}] }, { idempotencyKey:`starter-delivery/${attributionId}` });
       if (error) emailError = error.message || 'delivery_failed';
       else emailQueued = Boolean(data?.id);
     }
