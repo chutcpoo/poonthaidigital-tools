@@ -2,7 +2,7 @@ import crypto from 'node:crypto';
 import { Resend } from 'resend';
 import { STARTERS } from './_starter-config.js';
 import { nurtureEmails } from './_email-content.js';
-import { getDueNurture, markNurtureSent, requestBaseUrl } from './_lead-utils.js';
+import { getDueNurture, markNurtureFailed, markNurtureSent, requestBaseUrl } from './_lead-utils.js';
 
 const SCHEDULER_KEY_SHA256 = '2145d423e99e073b4bdd9c0fd5619f2948e8591bacd38b6617bf9bf7ccc93262';
 
@@ -31,10 +31,10 @@ export default async function handler(req, res) {
 
   for (const row of due) {
     const cfg = STARTERS[row.lead_magnet];
-    if (!cfg) { failed += 1; continue; }
+    if (!cfg) { failed += 1; await markNurtureFailed(row.id).catch(() => {}); continue; }
     const unsubscribeUrl = `${baseUrl}/unsubscribe/?email=${encodeURIComponent(row.email)}`;
     const message = nurtureEmails(cfg, unsubscribeUrl).find(item => item.key === row.message_type);
-    if (!message) { failed += 1; continue; }
+    if (!message) { failed += 1; await markNurtureFailed(row.id).catch(() => {}); continue; }
     try {
       const { data, error } = await resend.emails.send({
         from:'PoonthaiDigital <hello@poonthaidigital.com>',
@@ -43,12 +43,13 @@ export default async function handler(req, res) {
         html:message.html,
         text:message.text,
         tags:[{name:'funnel',value:message.key},{name:'starter',value:row.lead_magnet}]
-      });
-      if (error || !data?.id) { failed += 1; console.warn('nurture-send', row.id, error); continue; }
+      }, { idempotencyKey:`nurture/${row.id}/${row.message_type}` });
+      if (error || !data?.id) { failed += 1; await markNurtureFailed(row.id).catch(() => {}); console.warn('nurture-send', row.id, error); continue; }
       await markNurtureSent(row.id, data.id);
       sent += 1;
     } catch (error) {
       failed += 1;
+      await markNurtureFailed(row.id).catch(() => {});
       console.warn('nurture-send', row.id, error);
     }
   }
