@@ -1,26 +1,9 @@
 <!doctype html>
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PDT-IPT-001 Pilot Review</title>
-<style>
-html,body{margin:0;min-height:100%;background:#0b1722;color:#fff;font-family:system-ui,sans-serif}
-main{display:grid;place-items:center;min-height:100vh;padding:24px}
-.wrap{width:min(430px,92vw)}
-h1{font-size:18px;margin:0 0 12px}
-p{opacity:.72;font-size:13px;line-height:1.5}
-.stage{aspect-ratio:9/16;background:#111;border-radius:18px;overflow:hidden;box-shadow:0 22px 70px rgba(0,0,0,.45)}
-iframe{display:block;width:1080px;height:1920px;border:0;transform-origin:0 0}
-.controls{display:flex;gap:8px;margin-top:12px}
-button{border:0;border-radius:999px;padding:10px 16px;font-weight:700;cursor:pointer}
-</style></head>
-<body><main><div class="wrap"><h1>PDT-IPT-001 — HyperFrames Pilot Review</h1>
-<p>15 sec • 9:16 • real workbook screenshots • Navy / Teal / Gold • no fake UI</p>
-<div id="stage" class="stage"><iframe id="video" src="./index.html"></iframe></div>
-<div class="controls"><button id="replay">Replay</button></div></div></main>
-<script>
-const frame=document.getElementById("video"),stage=document.getElementById("stage");
-function fit(){const s=stage.clientWidth/1080;frame.style.transform="scale("+s+")";stage.style.height=(1920*s)+"px"}
-function play(){const w=frame.contentWindow;const t=w&&w.__timelines&&w.__timelines.pdt_ipt_001_pilot;if(t){t.pause(0);t.play(0)}}
-frame.addEventListener("load",()=>{fit();setTimeout(play,250)});
-document.getElementById("replay").addEventListener("click",play);
-addEventListener("resize",fit);
-</script></body></html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PDT-IPT-001 Pilot Gate</title>
+<style>body{margin:0;background:#10263A;color:#F6F1E8;font-family:system-ui,sans-serif}.wrap{max-width:760px;margin:0 auto;padding:56px 24px}h1{font-size:34px}code{background:#16324F;padding:3px 8px;border-radius:7px}.card{background:#16324F;border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:22px;margin:16px 0;line-height:1.6}strong{color:#D89B3C}</style>
+</head><body><div class="wrap"><h1>PDT-IPT-001 — HyperFrames Pilot</h1>
+<div class="card"><strong>Render source:</strong> <code>index.html</code><br>15 sec • 1080×1920 • 30 fps • real workbook screenshots • no fake UI</div>
+<div class="card">This Vercel page verifies the branch source is deployed. Exact motion/layout QC is performed by <code>hyperframes check</code> and representative snapshots before MP4 render.</div>
+<div class="card"><strong>Gate:</strong> lint --strict → check --strict → render → ffprobe → visual snapshot review.</div>
+</div></body></html>
