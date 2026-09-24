@@ -22,7 +22,7 @@ export default async function handler(req, res) {
       lead_magnet: payload.s,
       event_name: 'starter_download',
       source_path: '/api/starter-download',
-      metadata: { token_exp: payload.e }
+      metadata: { token_exp: payload.e, attribution_id: payload.a || null }
     }).catch(() => {});
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

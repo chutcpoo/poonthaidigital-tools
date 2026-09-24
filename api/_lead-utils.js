@@ -40,12 +40,12 @@ export async function checkLeadRateLimit(email, ipHash) {
     rows = await sql`SELECT
       count(*) FILTER (WHERE email=${email} AND occurred_at > now() - interval '1 hour')::int AS email_hour,
       count(*) FILTER (WHERE email=${email} AND occurred_at > now() - interval '24 hours')::int AS email_day,
-      count(*) FILTER (WHERE metadata->>'abuse_ip_hash'=${ipHash} AND occurred_at > now() - interval '1 hour')::int AS ip_hour,
-      count(*) FILTER (WHERE metadata->>'abuse_ip_hash'=${ipHash} AND occurred_at > now() - interval '24 hours')::int AS ip_day
+      count(*) FILTER (WHERE metadata->>'abuse_ip_hash'=${ipHash}::text AND occurred_at > now() - interval '1 hour')::int AS ip_hour,
+      count(*) FILTER (WHERE metadata->>'abuse_ip_hash'=${ipHash}::text AND occurred_at > now() - interval '24 hours')::int AS ip_day
       FROM lead_events
       WHERE event_name='lead_captured'
         AND occurred_at > now() - interval '24 hours'
-        AND (email=${email} OR metadata->>'abuse_ip_hash'=${ipHash})`;
+        AND (email=${email} OR metadata->>'abuse_ip_hash'=${ipHash}::text)`;
   } else {
     rows = await sql`SELECT
       count(*) FILTER (WHERE occurred_at > now() - interval '1 hour')::int AS email_hour,
@@ -66,10 +66,10 @@ export async function checkLeadRateLimit(email, ipHash) {
   return { limited, retryAfterSeconds: limited ? 3600 : 0, counts };
 }
 
-export function makeDownloadToken(slug, ttlSeconds = 60 * 60 * 48) {
+export function makeDownloadToken(slug, attributionId = null, ttlSeconds = 60 * 60 * 48) {
   const secret = process.env.DOWNLOAD_SIGNING_SECRET;
   if (!secret) throw new Error('DOWNLOAD_SIGNING_SECRET missing');
-  const payload = { s: slug, e: Math.floor(Date.now() / 1000) + ttlSeconds, n: crypto.randomBytes(10).toString('hex') };
+  const payload = { s: slug, e: Math.floor(Date.now() / 1000) + ttlSeconds, n: crypto.randomBytes(10).toString('hex'), ...(attributionId ? { a: String(attributionId).slice(0, 120) } : {}) };
   const body = Buffer.from(JSON.stringify(payload)).toString('base64url');
   const sig = crypto.createHmac('sha256', secret).update(body).digest('base64url');
   return `${body}.${sig}`;

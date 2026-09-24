@@ -18,7 +18,8 @@ export default async function handler(req, res) {
     'coffee_checklist',
     'cleaning_schedule',
     'private_chef_quote',
-    'waste_cost'
+    'waste_cost',
+    'invoice_aging'
   ]);
   const tool = allowed.has(String(payload.tool)) ? String(payload.tool) : 'unknown';
   const sourcePath = String(payload.sourcePath || '/').slice(0, 160);
