@@ -1,0 +1,26 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PDT-IPT-001 Pilot Review</title>
+<style>
+html,body{margin:0;min-height:100%;background:#0b1722;color:#fff;font-family:system-ui,sans-serif}
+main{display:grid;place-items:center;min-height:100vh;padding:24px}
+.wrap{width:min(430px,92vw)}
+h1{font-size:18px;margin:0 0 12px}
+p{opacity:.72;font-size:13px;line-height:1.5}
+.stage{aspect-ratio:9/16;background:#111;border-radius:18px;overflow:hidden;box-shadow:0 22px 70px rgba(0,0,0,.45)}
+iframe{display:block;width:1080px;height:1920px;border:0;transform-origin:0 0}
+.controls{display:flex;gap:8px;margin-top:12px}
+button{border:0;border-radius:999px;padding:10px 16px;font-weight:700;cursor:pointer}
+</style></head>
+<body><main><div class="wrap"><h1>PDT-IPT-001 — HyperFrames Pilot Review</h1>
+<p>15 sec • 9:16 • real workbook screenshots • Navy / Teal / Gold • no fake UI</p>
+<div id="stage" class="stage"><iframe id="video" src="./index.html"></iframe></div>
+<div class="controls"><button id="replay">Replay</button></div></div></main>
+<script>
+const frame=document.getElementById("video"),stage=document.getElementById("stage");
+function fit(){const s=stage.clientWidth/1080;frame.style.transform="scale("+s+")";stage.style.height=(1920*s)+"px"}
+function play(){const w=frame.contentWindow;const t=w&&w.__timelines&&w.__timelines.pdt_ipt_001_pilot;if(t){t.pause(0);t.play(0)}}
+frame.addEventListener("load",()=>{fit();setTimeout(play,250)});
+document.getElementById("replay").addEventListener("click",play);
+addEventListener("resize",fit);
+</script></body></html>
