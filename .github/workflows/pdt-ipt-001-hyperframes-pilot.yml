@@ -1,0 +1,57 @@
+name: PDT-IPT-001 HyperFrames Pilot
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - pilot-pdt-ipt-001-hyperframes-r01
+    paths:
+      - 'video/hyperframes/PDT-IPT-001/**'
+      - '.github/workflows/pdt-ipt-001-hyperframes-pilot.yml'
+
+permissions:
+  contents: read
+
+env:
+  HYPERFRAMES_NO_TELEMETRY: "1"
+  HYPERFRAMES_NO_UPDATE_CHECK: "1"
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+      - name: Install HyperFrames browser
+        run: npx --yes hyperframes@latest browser --install
+      - name: Environment check
+        run: npx --yes hyperframes@latest doctor
+      - name: HyperFrames lint
+        working-directory: video/hyperframes/PDT-IPT-001
+        run: npx --yes hyperframes@latest lint .
+      - name: HyperFrames browser check
+        working-directory: video/hyperframes/PDT-IPT-001
+        run: npx --yes hyperframes@latest check . --describe false --timeout 10000
+      - name: Render MP4
+        working-directory: video/hyperframes/PDT-IPT-001
+        run: npx --yes hyperframes@latest render --quality standard --fps 30 --output PDT-IPT-001_VIDEO_01_HYPERFRAMES_PILOT_R01.mp4
+      - name: Verify delivery
+        working-directory: video/hyperframes/PDT-IPT-001
+        run: |
+          test -s PDT-IPT-001_VIDEO_01_HYPERFRAMES_PILOT_R01.mp4
+          ffprobe -v error -show_entries stream=codec_name,width,height,r_frame_rate -show_entries format=duration -of json PDT-IPT-001_VIDEO_01_HYPERFRAMES_PILOT_R01.mp4 | tee ffprobe.json
+          node -e 'const fs=require("fs");const p=JSON.parse(fs.readFileSync("ffprobe.json","utf8"));const v=p.streams.find(s=>s.width);const d=Number(p.format.duration);if(!v||v.codec_name!=="h264"||v.width!==1080||v.height!==1920||v.r_frame_rate!=="30/1"||Math.abs(d-15)>0.25){console.error(p);process.exit(1)}'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PDT-IPT-001-HYPERFRAMES-PILOT-R01
+          path: |
+            video/hyperframes/PDT-IPT-001/PDT-IPT-001_VIDEO_01_HYPERFRAMES_PILOT_R01.mp4
+            video/hyperframes/PDT-IPT-001/ffprobe.json
+          retention-days: 14
