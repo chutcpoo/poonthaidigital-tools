@@ -1,6 +1,7 @@
-# PDT-IPT-001 HyperFrames Pilot R01
+# PDT-IPT-001 HyperFrames Pilot R02
 
-Status: PILOT / BRANCH ONLY / NO PRODUCTION MUTATION
+Status: PILOT / DRAFT PR ONLY / NO PRODUCTION MUTATION
+HyperFrames version: 0.8.72 (pinned after live CLI validation)
 
 ## Deliverable
 - 15.0 seconds
@@ -24,24 +25,22 @@ Status: PILOT / BRANCH ONLY / NO PRODUCTION MUTATION
 - Aging & Follow-Up: PDT-IPT-001_GALLERY_SOURCE_05_AGING_FOLLOWUP.png — Drive ID 1ZtIV4uQXbjtsubnj3nvDyhr25iwpu4F9
 - Monthly Summary: PDT-IPT-001_GALLERY_SOURCE_06_MONTHLY_SUMMARY.png — Drive ID 1aQKBe8o4KLDhfXiZokxyQpqbjzXM6y3_
 
-The screenshot bytes are embedded in index.html so CI/render does not require public Drive sharing or Drive API credentials. No buyer workbook file is committed.
+Screenshot bytes are embedded only in the scene composition files. No buyer workbook file is committed.
 
-## Scene timing
+## Composition structure
+Root index mounts 5 HyperFrames sub-compositions on separate timeline tracks:
 1. 0.0–2.7 — Dashboard — “Know What’s Outstanding — Fast”
 2. 2.7–5.7 — Invoices — “Track Every Invoice in One Place”
 3. 5.7–8.8 — Aging & Follow-Up — “Turn Overdue Invoices into an Action List”
 4. 8.8–11.8 — Monthly Summary — “See Monthly Invoiced vs Received”
 5. 11.8–15.0 — CTA — “Track. Review. Follow Up.” / Excel • 2 Files • 7 Tabs
 
-## Review
-Open review.html on the Vercel branch preview. It plays the exact paused GSAP timeline authored in index.html; HyperFrames CLI renders index.html directly.
-
 ## Gate
 PASS only when:
-1. HyperFrames lint = PASS
-2. HyperFrames check = PASS
-3. HyperFrames render = PASS
-4. ffprobe verifies 1080×1920, 30 fps, approx 15 seconds
-5. Visual review confirms no crop/collision/overflow and screenshots remain legible enough for intended placement
+1. `hyperframes lint . --strict` = PASS
+2. `hyperframes check . --strict` at representative scene timestamps = PASS
+3. Snapshot review = PASS
+4. HyperFrames render = PASS
+5. ffprobe verifies H.264, 1080×1920, 30 fps, approx 15 seconds
 
 Existing Etsy R01 720×720 video is protected and unchanged.
