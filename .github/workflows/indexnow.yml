@@ -1,8 +1,6 @@
 name: Submit IndexNow
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 jobs:
