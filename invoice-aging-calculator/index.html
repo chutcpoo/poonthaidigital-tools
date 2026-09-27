@@ -81,8 +81,8 @@
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script><script defer src="https://cdn.vercel-insights.com/v1/script.js"></script><script src="/assets/app.js"></script>
 <script>
 (()=> {
-  // Core calculator fallback stays independent from analytics so privacy/ad blockers
-  // cannot break the buyer-facing tool or its product handoff.
+  // Buyer-facing calculator fallback: intentionally contains no analytics,
+  // pixels or third-party tracking so privacy/ad blockers cannot break the tool.
   const q=new URLSearchParams(location.search);
   const current=Object.fromEntries(Object.entries({
     utm_source:q.get('utm_source'),
@@ -113,22 +113,8 @@
       a.href=u.toString();
     }catch(_){}
   };
-  const fire=(name,data={})=>{
-    const safe={...data,page_path:location.pathname,...attr};
-    try{if(typeof window.gtag==='function')window.gtag('event',name,safe);}catch(_){}
-    try{if(typeof window.pdTrackMeta==='function')window.pdTrackMeta(name==='tool_used'?'ToolUsed':name,safe);}catch(_){}
-    try{if(typeof window.va==='function')window.va('event',{name:name==='tool_used'?'Tool Used':name,data:safe});}catch(_){}
-  };
   const hideCta=()=>{const c=cta();if(c)c.style.display='none';};
-  const showCta=()=>{
-    const c=cta();if(!c)return;
-    c.style.display='';
-    decorate();
-    if(!window.__pdInvoiceProductCtaTracked){
-      window.__pdInvoiceProductCtaTracked=true;
-      fire('ProductCTA',{product:'PDT-IPT-001',placement:'invoice_aging_result'});
-    }
-  };
+  const showCta=()=>{const c=cta();if(!c)return;c.style.display='';decorate();};
   window.calcInvoiceAging=()=>{
     const dueValue=document.getElementById('agingDueDate')?.value||'';
     const asOfValue=document.getElementById('agingAsOf')?.value||'';
@@ -144,7 +130,6 @@
       if(result)result.innerHTML='<strong>Please enter a valid due date, as-of date and non-negative remaining balance.</strong>';
       return;
     }
-    fire('tool_used',{tool_name:'invoice_aging'});
     if(balance===0){
       hideCta();
       if(result)result.innerHTML='<strong>Status: Paid</strong><br>Remaining balance is $0.00, so there is no unpaid amount to age.';
