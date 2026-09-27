@@ -199,6 +199,40 @@ const etsyProductFromUrl = (url) => {
   return 'shop';
 };
 
+// Carry first-touch attribution through the PDT-IPT-001 internal journey and
+// into Shopify so qualified-session diagnostics remain attributable.
+const pdAttributionParams = () => {
+  const p = new URLSearchParams();
+  for (const key of ['utm_source','utm_medium','utm_campaign','utm_content']) {
+    if (pdAttributionClean[key]) p.set(key, pdAttributionClean[key]);
+  }
+  return p;
+};
+const pdDecorateAttributionLinks = () => {
+  if (!Object.keys(pdAttributionClean).length) return;
+  document.querySelectorAll('a[href]').forEach(link => {
+    try {
+      const u = new URL(link.href, window.location.origin);
+      const isInternal = u.origin === window.location.origin;
+      const isShopify = u.hostname === 'shop.poonthaidigital.com';
+      if (!isInternal && !isShopify) return;
+      for (const [k,v] of pdAttributionParams()) if (!u.searchParams.has(k)) u.searchParams.set(k,v);
+      link.href = u.toString();
+    } catch (_) {}
+  });
+};
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', pdDecorateAttributionLinks, {once:true});
+else pdDecorateAttributionLinks();
+
+document.addEventListener('click', (event) => {
+  const link=event.target.closest('a[href*="shop.poonthaidigital.com/products/invoice-payment-tracker-excel"]');
+  if (!link) return;
+  const sourcePath=window.location.pathname;
+  const data={product:'PDT-IPT-001',source_path:sourcePath,target_host:'shop.poonthaidigital.com'};
+  try { if (typeof window.gtag === 'function') window.gtag('event','shopify_click',{...data,...pdAttributionClean}); } catch (_) {}
+  trackMeta('ShopifyClick',data);
+});
+
 document.addEventListener('click', (event) => {
   const link=event.target.closest('a[href*="etsy.com"]'); if (!link) return;
   const product=etsyProductFromUrl(link.href), sourcePath=window.location.pathname;
