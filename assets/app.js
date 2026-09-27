@@ -216,7 +216,7 @@ const pdDecorateAttributionLinks = () => {
       const isInternal = u.origin === window.location.origin;
       const isShopify = u.hostname === 'shop.poonthaidigital.com';
       if (!isInternal && !isShopify) return;
-      for (const [k,v] of pdAttributionParams()) if (!u.searchParams.has(k)) u.searchParams.set(k,v);
+      for (const [k,v] of pdAttributionParams()) if (isShopify || !u.searchParams.has(k)) u.searchParams.set(k,v);
       link.href = u.toString();
     } catch (_) {}
   });
