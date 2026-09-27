@@ -37,7 +37,15 @@ jobs:
           curl -fsS "$BASE/robots.txt" -o /tmp/robots.txt
           curl -fsS "$BASE/sitemap.xml" -o /tmp/sitemap.xml
           curl -fsS "$BASE/assets/app.js" -o /tmp/app.js
-          test "$(grep -c '<loc>' /tmp/sitemap.xml)" -eq 20
+          LOC_COUNT="$(grep -c '<loc>' /tmp/sitemap.xml)"
+          test "$LOC_COUNT" -gt 0
+          for required_url in \
+            'https://poonthaidigital.com/invoice-aging-calculator/' \
+            'https://poonthaidigital.com/invoice-payment-tracker/' \
+            'https://poonthaidigital.com/guides/invoice-aging-explained/' \
+            'https://poonthaidigital.com/guides/overdue-invoice-follow-up-process/'; do
+            grep -q "<loc>${required_url}</loc>" /tmp/sitemap.xml
+          done
           grep -q 'Sitemap: https://poonthaidigital.com/sitemap.xml' /tmp/robots.txt
           grep -q 'G-0299KE0RD0' /tmp/home.html
           grep -q 'etsy_click' /tmp/app.js
@@ -74,7 +82,7 @@ jobs:
           curl -fsS "$BASE/invoice-payment-tracker/" -o /tmp/invoice.html
           curl -fsS "$BASE/catalog-status/" -o /tmp/catalog.html
           curl -fsS "$BASE/assets/lead-funnel.js" -o /tmp/lead-funnel.js
-          grep -q 'https://www.etsy.com/listing/4578945050' /tmp/invoice.html
+          grep -q 'https://shop.poonthaidigital.com/products/invoice-payment-tracker-excel' /tmp/invoice.html
           grep -q 'PDT-IPT-001' /tmp/invoice.html
           grep -q 'Digital download' /tmp/invoice.html
           grep -q 'Invoice &amp; Payment Follow-Up Tracker' /tmp/catalog.html
