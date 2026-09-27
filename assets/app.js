@@ -158,6 +158,19 @@ function calcWasteCost(){
 }
 
 
+const pdHideInvoiceProductCta=()=>{const c=document.getElementById('agingProductCta');if(c)c.style.display='none';};
+const pdShowInvoiceProductCta=()=>{
+  const c=document.getElementById('agingProductCta'); if(!c)return;
+  c.style.display='';
+  if(!window.__pdInvoiceProductCtaTracked){
+    window.__pdInvoiceProductCtaTracked=true;
+    const data={product:'PDT-IPT-001',placement:'invoice_aging_result',source_path:window.location.pathname};
+    try{if(typeof window.gtag==='function')window.gtag('event','product_cta_view',{...data,...pdAttributionClean});}catch(_){}
+    trackMeta('ProductCTA',data);
+  }
+  try{pdDecorateAttributionLinks();}catch(_){}
+};
+
 function calcInvoiceAging(){
   const dueValue=document.getElementById('agingDueDate')?.value || '';
   const asOfValue=document.getElementById('agingAsOf')?.value || '';
@@ -170,11 +183,13 @@ function calcInvoiceAging(){
   };
   const due=parseYmd(dueValue), asOf=parseYmd(asOfValue), balance=Number(balanceRaw);
   if(due===null || asOf===null || balanceRaw==='' || !Number.isFinite(balance) || balance<0){
+    pdHideInvoiceProductCta();
     if(result) result.innerHTML='<strong>Please enter a valid due date, as-of date and non-negative remaining balance.</strong>';
     return;
   }
   if(balance===0){
     trackVa('Tool Used',{tool:'invoice_aging'});
+    pdHideInvoiceProductCta();
     if(result) result.innerHTML='<strong>Status: Paid</strong><br>Remaining balance is $0.00, so there is no unpaid amount to age.';
     return;
   }
@@ -182,6 +197,7 @@ function calcInvoiceAging(){
     const daysUntil=Math.ceil((due-asOf)/86400000);
     trackVa('Tool Used',{tool:'invoice_aging'});
     if(result) result.innerHTML=`<strong>Status: Current</strong><br>Remaining balance: ${money(balance)}<br>${daysUntil} day${daysUntil===1?'':'s'} until the due date.<br>Aging bucket: Current.`;
+    pdShowInvoiceProductCta();
     return;
   }
   const days=Math.floor((asOf-due)/86400000);
@@ -192,6 +208,7 @@ function calcInvoiceAging(){
   else if(days>90){bucket='90+ days';status='Overdue';}
   trackVa('Tool Used',{tool:'invoice_aging'});
   if(result) result.innerHTML=`<strong>Status: ${status}</strong><br>Remaining balance: ${money(balance)}<br>Days overdue: ${days}<br>Aging bucket: ${bucket}.`;
+  pdShowInvoiceProductCta();
 }
 
 const etsyProductFromUrl = (url) => {
@@ -216,7 +233,12 @@ const pdDecorateAttributionLinks = () => {
       const isInternal = u.origin === window.location.origin;
       const isShopify = u.hostname === 'shop.poonthaidigital.com';
       if (!isInternal && !isShopify) return;
-      for (const [k,v] of pdAttributionParams()) if (isShopify || !u.searchParams.has(k)) u.searchParams.set(k,v);
+      if (isShopify) {
+        for (const key of ['utm_source','utm_medium','utm_campaign','utm_content']) u.searchParams.delete(key);
+        for (const [k,v] of pdAttributionParams()) u.searchParams.set(k,v);
+      } else {
+        for (const [k,v] of pdAttributionParams()) if (!u.searchParams.has(k)) u.searchParams.set(k,v);
+      }
       link.href = u.toString();
     } catch (_) {}
   });
@@ -228,8 +250,14 @@ document.addEventListener('click', (event) => {
   const link=event.target.closest('a[href*="shop.poonthaidigital.com/products/invoice-payment-tracker-excel"]');
   if (!link) return;
   const sourcePath=window.location.pathname;
-  const data={product:'PDT-IPT-001',source_path:sourcePath,target_host:'shop.poonthaidigital.com'};
-  try { if (typeof window.gtag === 'function') window.gtag('event','shopify_click',{...data,...pdAttributionClean}); } catch (_) {}
+  const placement=link.dataset.pdCta || '';
+  const data={product:'PDT-IPT-001',source_path:sourcePath,target_host:'shop.poonthaidigital.com',placement};
+  try {
+    if (typeof window.gtag === 'function') {
+      window.gtag('event','shopify_click',{...data,...pdAttributionClean});
+      if (placement) window.gtag('event','product_cta_click',{...data,...pdAttributionClean});
+    }
+  } catch (_) {}
   trackMeta('ShopifyClick',data);
 });
 
