@@ -79,5 +79,98 @@
 </main>
 <footer><div class="wrap"><div class="footer-grid"><div><strong>PoonthaiDigital</strong><br><span>Practical planning tools, guides and digital operations templates for small businesses.</span></div><div class="footer-links"><a href="/tools/">Free Tools</a><a href="/guides/">Guides</a><a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/disclaimer/">Disclaimer</a><a href="https://www.facebook.com/profile.php?id=61594431540897" target="_blank" rel="noopener">Facebook ↗</a></div></div><p class="small">Planning aids only. Nothing on this site is legal, tax, accounting or collections advice.</p></div></footer>
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script><script defer src="https://cdn.vercel-insights.com/v1/script.js"></script><script src="/assets/app.js"></script>
-<script>document.addEventListener('DOMContentLoaded',()=>{const e=document.getElementById('agingAsOf');if(e&&!e.value){const d=new Date(),z=n=>String(n).padStart(2,'0');e.value=d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate());}});</script>
+<script>
+(()=> {
+  // Core calculator fallback stays independent from analytics so privacy/ad blockers
+  // cannot break the buyer-facing tool or its product handoff.
+  const q=new URLSearchParams(location.search);
+  const current=Object.fromEntries(Object.entries({
+    utm_source:q.get('utm_source'),
+    utm_medium:q.get('utm_medium'),
+    utm_campaign:q.get('utm_campaign'),
+    utm_content:q.get('utm_content')
+  }).filter(([,v])=>v));
+  let stored={};
+  try{
+    stored=JSON.parse(sessionStorage.getItem('pd_first_touch_attribution_v1')||'{}')||{};
+    if(!Object.keys(stored).length&&Object.keys(current).length){
+      stored={...current,landing_path:location.pathname};
+      sessionStorage.setItem('pd_first_touch_attribution_v1',JSON.stringify(stored));
+    }
+  }catch(_){}
+  const attr=Object.keys(stored).length?stored:current;
+  const fmtMoney=v=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:2}).format(v);
+  const cta=()=>document.getElementById('agingProductCta');
+  const decorate=()=>{
+    const a=cta()?.querySelector('a[data-pd-cta]');
+    if(!a)return;
+    try{
+      const u=new URL(a.href);
+      if(Object.keys(attr).length){
+        for(const k of ['utm_source','utm_medium','utm_campaign','utm_content'])u.searchParams.delete(k);
+        for(const k of ['utm_source','utm_medium','utm_campaign','utm_content'])if(attr[k])u.searchParams.set(k,attr[k]);
+      }
+      a.href=u.toString();
+    }catch(_){}
+  };
+  const fire=(name,data={})=>{
+    const safe={...data,page_path:location.pathname,...attr};
+    try{if(typeof window.gtag==='function')window.gtag('event',name,safe);}catch(_){}
+    try{if(typeof window.pdTrackMeta==='function')window.pdTrackMeta(name==='tool_used'?'ToolUsed':name,safe);}catch(_){}
+    try{if(typeof window.va==='function')window.va('event',{name:name==='tool_used'?'Tool Used':name,data:safe});}catch(_){}
+  };
+  const hideCta=()=>{const c=cta();if(c)c.style.display='none';};
+  const showCta=()=>{
+    const c=cta();if(!c)return;
+    c.style.display='';
+    decorate();
+    if(!window.__pdInvoiceProductCtaTracked){
+      window.__pdInvoiceProductCtaTracked=true;
+      fire('ProductCTA',{product:'PDT-IPT-001',placement:'invoice_aging_result'});
+    }
+  };
+  window.calcInvoiceAging=()=>{
+    const dueValue=document.getElementById('agingDueDate')?.value||'';
+    const asOfValue=document.getElementById('agingAsOf')?.value||'';
+    const balanceRaw=document.getElementById('agingBalance')?.value??'';
+    const result=document.getElementById('result');
+    const parseYmd=value=>{
+      const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+      return m?Date.UTC(Number(m[1]),Number(m[2])-1,Number(m[3])):null;
+    };
+    const due=parseYmd(dueValue),asOf=parseYmd(asOfValue),balance=Number(balanceRaw);
+    if(due===null||asOf===null||balanceRaw===''||!Number.isFinite(balance)||balance<0){
+      hideCta();
+      if(result)result.innerHTML='<strong>Please enter a valid due date, as-of date and non-negative remaining balance.</strong>';
+      return;
+    }
+    fire('tool_used',{tool_name:'invoice_aging'});
+    if(balance===0){
+      hideCta();
+      if(result)result.innerHTML='<strong>Status: Paid</strong><br>Remaining balance is $0.00, so there is no unpaid amount to age.';
+      return;
+    }
+    if(asOf<due){
+      const daysUntil=Math.ceil((due-asOf)/86400000);
+      if(result)result.innerHTML=`<strong>Status: Current</strong><br>Remaining balance: ${fmtMoney(balance)}<br>${daysUntil} day${daysUntil===1?'':'s'} until the due date.<br>Aging bucket: Current.`;
+      showCta();
+      return;
+    }
+    const days=Math.floor((asOf-due)/86400000);
+    let bucket='Current',status=days===0?'Due today':'Current';
+    if(days>=1&&days<=30){bucket='1–30 days';status='Overdue';}
+    else if(days>=31&&days<=60){bucket='31–60 days';status='Overdue';}
+    else if(days>=61&&days<=90){bucket='61–90 days';status='Overdue';}
+    else if(days>90){bucket='90+ days';status='Overdue';}
+    if(result)result.innerHTML=`<strong>Status: ${status}</strong><br>Remaining balance: ${fmtMoney(balance)}<br>Days overdue: ${days}<br>Aging bucket: ${bucket}.`;
+    showCta();
+  };
+  const init=()=>{
+    const e=document.getElementById('agingAsOf');
+    if(e&&!e.value){const d=new Date(),z=n=>String(n).padStart(2,'0');e.value=d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate());}
+    decorate();
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
+</script>
 </body></html>
