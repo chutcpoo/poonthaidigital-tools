@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Free Small Business Pricing Calculator | Cost, Markup & Margin</title>
+<meta name="description" content="Free small business pricing calculator for products and services. Compare break-even, markup, target-margin and target-profit prices using your own costs, fees and discount assumptions.">
+<link rel="canonical" href="https://poonthaidigital.com/small-business-pricing-calculator/">
+<meta name="robots" content="index,follow,max-image-preview:large"><meta name="theme-color" content="#16324F">
+<link rel="icon" href="/assets/poonthaidigital-logo.svg" type="image/svg+xml">
+<meta property="og:type" content="website"><meta property="og:title" content="Free Small Business Pricing Calculator | PoonthaiDigital">
+<meta property="og:description" content="Compare break-even, markup, target-margin and target-profit prices using your own costs and assumptions.">
+<meta property="og:url" content="https://poonthaidigital.com/small-business-pricing-calculator/"><meta property="og:site_name" content="PoonthaiDigital">
+<meta property="og:image" content="https://poonthaidigital.com/assets/poonthaidigital-social-share.png"><meta property="og:image:alt" content="PoonthaiDigital small business pricing calculator">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Free Small Business Pricing Calculator">
+<meta name="twitter:description" content="Compare break-even, markup, margin and target-profit pricing from your own cost assumptions.">
+<meta name="twitter:image" content="https://poonthaidigital.com/assets/poonthaidigital-social-share.png">
+<link rel="stylesheet" href="/assets/styles.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Small Business Pricing Calculator","url":"https://poonthaidigital.com/small-business-pricing-calculator/","applicationCategory":"BusinessApplication","operatingSystem":"Any","isAccessibleForFree":true,"description":"Free browser-based pricing calculator for small product- and service-based businesses to compare break-even, markup, target-margin and target-profit pricing scenarios.","publisher":{"@type":"Organization","name":"PoonthaiDigital","url":"https://poonthaidigital.com/","logo":"https://poonthaidigital.com/assets/poonthaidigital-logo.svg"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://poonthaidigital.com/"},{"@type":"ListItem","position":2,"name":"Free Tools","item":"https://poonthaidigital.com/tools/"},{"@type":"ListItem","position":3,"name":"Small Business Pricing Calculator","item":"https://poonthaidigital.com/small-business-pricing-calculator/"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is markup the same as profit margin?","acceptedAnswer":{"@type":"Answer","text":"No. Markup is profit compared with cost, while margin is profit compared with selling price. A 50% markup on a $40 cost produces a $60 price and a 33.3% gross margin before other fees or discounts."}},{"@type":"Question","name":"What is a break-even price?","acceptedAnswer":{"@type":"Answer","text":"In this calculator, break-even is the estimated list price that covers the entered unit cost and selling fees after the entered discount assumption, before tax."}},{"@type":"Question","name":"Does this calculator tell me the correct price to charge?","acceptedAnswer":{"@type":"Answer","text":"No. It compares pricing scenarios from the assumptions you enter. Market demand, taxes, local rules, competition and business strategy still need separate judgment."}}]}</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0299KE0RD0"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-0299KE0RD0');</script>
+</head>
+<body>
+<header><div class="wrap"><nav><a class="brand" href="/"><span class="brandmark">P</span><span>PoonthaiDigital Tools</span></a><div class="navlinks"><a href="/tools/">Free Tools</a><a href="/guides/">Guides</a><a href="/about/">About</a><a href="/catalog-status/" class="btn btn-primary">Catalog status</a></div></nav></div></header>
+<div class="wrap breadcrumbs"><a href="/">Home</a> / <a href="/tools/">Free Tools</a> / Small Business Pricing Calculator</div>
+<main>
+<section><div class="wrap hero-grid">
+<div><span class="eyebrow">FREE PRICING TOOL</span><h1 class="page-title">Small Business Pricing Calculator</h1><p class="lede">Use your real cost assumptions to compare four pricing methods side by side: break-even, cost-plus markup, target margin and target profit.</p><p class="small">Runs in your browser • No signup • Your calculator inputs are not sent in analytics events</p></div>
+<div class="form-card">
+<div class="form-grid">
+<label>Material / direct cost per unit ($)<input id="pDirect" type="number" min="0" step="0.01" placeholder="e.g. 12"></label>
+<label>Labor minutes per unit<input id="pLaborMin" type="number" min="0" step="0.01" placeholder="e.g. 30"></label>
+<label>Labor rate per hour ($)<input id="pLaborRate" type="number" min="0" step="0.01" placeholder="e.g. 25"></label>
+<label>Packaging per unit ($)<input id="pPackaging" type="number" min="0" step="0.01" placeholder="e.g. 1.50"></label>
+<label>Shipping / fulfillment per unit ($)<input id="pFulfillment" type="number" min="0" step="0.01" placeholder="e.g. 2"></label>
+<label>Other variable cost per unit ($)<input id="pOther" type="number" min="0" step="0.01" placeholder="e.g. 0.50"></label>
+<label>Monthly overhead ($)<input id="pOverhead" type="number" min="0" step="0.01" placeholder="e.g. 500"></label>
+<label>Expected units per month<input id="pUnits" type="number" min="0.01" step="0.01" placeholder="e.g. 100"></label>
+<label>Selling / payment fee (%)<input id="pFeePct" type="number" min="0" max="99.99" step="0.01" placeholder="e.g. 3"></label>
+<label>Fixed fee per sale ($)<input id="pFixedFee" type="number" min="0" step="0.01" placeholder="e.g. 0.30"></label>
+<label>Typical discount (%)<input id="pDiscountPct" type="number" min="0" max="99.99" step="0.01" placeholder="e.g. 0"></label>
+<label>Target markup (%)<input id="pMarkupPct" type="number" min="0" step="0.01" placeholder="e.g. 50"></label>
+<label>Target margin (%)<input id="pMarginPct" type="number" min="0" max="99.99" step="0.01" placeholder="e.g. 40"></label>
+<label>Target profit per unit ($)<input id="pTargetProfit" type="number" min="0" step="0.01" placeholder="e.g. 10"></label>
+</div>
+<div class="actions"><button class="btn btn-primary" onclick="calcPricing()">Compare Pricing Methods</button></div>
+<div class="result" id="pricingResult" aria-live="polite">Enter your assumptions to compare pricing scenarios.</div>
+<div class="notice">Planning tool only. Results depend on your inputs and do not guarantee sales, profit, revenue or business outcomes. Marketplace and payment fees can change.</div>
+</div></div></section>
+
+<section class="content-section"><div class="wrap prose">
+<span class="eyebrow">PRICING METHODS</span><h2>What the calculator compares</h2>
+<p>The same product can produce very different prices depending on the question you are trying to answer. This tool keeps four common methods separate so markup and margin do not get mixed together.</p>
+<div class="grid-3 compact-grid">
+<div class="mini-card"><strong>Break-even price</strong><span>Estimated list price that covers the entered cost and selling fees after the entered discount assumption.</span></div>
+<div class="mini-card"><strong>Cost-plus markup</strong><span>Adds your target markup to total cost, then adjusts the list price for your fee and discount assumptions.</span></div>
+<div class="mini-card"><strong>Target-margin price</strong><span>Solves for a selling price intended to leave the target margin after the entered percentage fee and cost assumptions.</span></div>
+<div class="mini-card"><strong>Target-profit price</strong><span>Solves for a selling price intended to leave the dollar profit per unit you entered after costs and selling fees.</span></div>
+</div>
+
+<h2>First calculate the real working cost per unit</h2>
+<p>The calculator adds direct cost, labor, packaging, seller-paid fulfillment, other variable cost and allocated monthly overhead. Labor cost is based on minutes per unit and the hourly rate you enter. Monthly overhead is divided by the expected monthly units you enter.</p>
+<div class="formula-box"><strong>Total cost per unit = direct cost + labor + packaging + fulfillment + other variable cost + allocated overhead</strong></div>
+<p>If expected unit volume changes, the overhead amount allocated to each unit also changes. That is why the result is a planning scenario rather than a permanent “correct” price.</p>
+
+<h2>Markup and margin are not the same</h2>
+<p>Markup compares profit with cost. Margin compares profit with selling price. For example, a $40 cost with a 50% markup gives a $60 selling price before other fees or discounts. The profit is $20, so the margin is $20 ÷ $60 = 33.3%, not 50%.</p>
+<div class="callout"><h3>Need the formulas explained step by step?</h3><p>See the practical guide to markup, margin, break-even and target-profit pricing.</p><p><a href="/guides/markup-vs-margin-small-business-pricing/" style="color:white">Read Markup vs Margin for Small Business Pricing →</a></p></div>
+
+<h2>How fees and discounts change the list price</h2>
+<p>If you usually discount from list price, or if a marketplace or payment processor takes a percentage fee, the list price has to carry those assumptions. This calculator uses the values you enter; it does not load or promise current marketplace fee schedules.</p>
+<p>A fixed per-sale fee is also treated separately from percentage fees. Enter your own current assumptions and review them whenever your selling channel changes its fee structure.</p>
+
+<h2>Which number should you use?</h2>
+<p>The calculator shows each method instead of choosing a commercial price for you. The highest result can be a conservative planning reference, but a real selling decision still depends on demand, positioning, customer value, competition, taxes, channel rules and your own business strategy.</p>
+<ul>
+<li>Use <strong>break-even</strong> to understand the floor created by the assumptions you entered.</li>
+<li>Use <strong>markup</strong> when your process starts from cost and adds a chosen percentage.</li>
+<li>Use <strong>target margin</strong> when you want profit to represent a chosen share of the selling price.</li>
+<li>Use <strong>target profit</strong> when you want a specific dollar profit per unit under the scenario.</li>
+</ul>
+
+<h2>Common small-business pricing mistakes</h2>
+<ol>
+<li><strong>Leaving labor out.</strong> Time is still a cost assumption even when the owner performs the work.</li>
+<li><strong>Ignoring overhead.</strong> Software, insurance, rent, equipment and other business costs do not disappear just because they are not attached to one unit.</li>
+<li><strong>Calling markup “margin.”</strong> They use different denominators and produce different percentages.</li>
+<li><strong>Using stale fee assumptions.</strong> Marketplace and payment fees change, so verify the rate you enter.</li>
+<li><strong>Treating one formula as market proof.</strong> A mathematically valid price can still be wrong for the market or offer.</li>
+</ol>
+
+<div class="faq"><h2>Quick questions</h2>
+<details><summary>Is markup the same as profit margin?</summary><p>No. Markup is profit compared with cost, while margin is profit compared with selling price. A 50% markup on a $40 cost produces a $60 price and a 33.3% margin before other fees or discounts.</p></details>
+<details><summary>What is a break-even price?</summary><p>In this calculator, break-even is the estimated list price that covers the entered unit cost and selling fees after the entered discount assumption, before tax.</p></details>
+<details><summary>Does this calculator tell me the correct price to charge?</summary><p>No. It compares pricing scenarios from the assumptions you enter. Market demand, taxes, local rules, competition and business strategy still need separate judgment.</p></details>
+</div>
+<p class="small">General planning guidance only. This calculator is not accounting, tax, legal or financial advice.</p>
+</div></section>
+</main>
+<footer><div class="wrap"><div class="footer-grid"><div><strong>PoonthaiDigital</strong><br><span>Practical planning tools, guides and digital operations templates for small businesses.</span></div><div class="footer-links"><a href="/tools/">Free Tools</a><a href="/guides/">Guides</a><a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/disclaimer/">Disclaimer</a></div></div><p class="small">Planning aids only. Nothing on this site is legal, tax, accounting or financial advice.</p></div></footer>
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script><script defer src="https://cdn.vercel-insights.com/v1/script.js"></script><script src="/assets/app.js"></script>
+<script>
+function pnum(id){const v=parseFloat(document.getElementById(id).value);return Number.isFinite(v)?v:0;}
+function money(v){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:2}).format(v);}
+function calcPricing(){
+  const direct=pnum('pDirect'), laborMin=pnum('pLaborMin'), laborRate=pnum('pLaborRate'), packaging=pnum('pPackaging'), fulfillment=pnum('pFulfillment'), other=pnum('pOther'), overhead=pnum('pOverhead'), units=pnum('pUnits'), fixedFee=pnum('pFixedFee'), targetProfit=pnum('pTargetProfit');
+  const fee=pnum('pFeePct')/100, discount=pnum('pDiscountPct')/100, markup=pnum('pMarkupPct')/100, margin=pnum('pMarginPct')/100;
+  const out=document.getElementById('pricingResult');
+  if(units<=0){out.innerHTML='<strong>Enter expected units per month greater than zero.</strong>';return;}
+  if(fee<0||fee>=1||discount<0||discount>=1||margin<0||margin>=1){out.innerHTML='<strong>Fee, discount and target margin must each be between 0% and less than 100%.</strong>';return;}
+  const labor=laborMin/60*laborRate;
+  const overheadUnit=overhead/units;
+  const cost=direct+labor+packaging+fulfillment+other+overheadUnit;
+  const base=(1-discount)*(1-fee);
+  const marginBase=(1-discount)*(1-fee-margin);
+  if(base<=0||marginBase<=0){out.innerHTML='<strong>Your fee, discount and target-margin combination leaves no valid positive price denominator. Lower one or more percentage assumptions.</strong>';return;}
+  const breakEven=(cost+fixedFee)/base;
+  const markupPrice=(cost*(1+markup)+fixedFee)/base;
+  const marginPrice=(cost+fixedFee)/marginBase;
+  const targetProfitPrice=(cost+fixedFee+targetProfit)/base;
+  const recommended=Math.max(breakEven,markupPrice,marginPrice,targetProfitPrice);
+  const customerPrice=recommended*(1-discount);
+  const pctFee=customerPrice*fee;
+  const profit=customerPrice-pctFee-fixedFee-cost;
+  const actualMargin=customerPrice>0?profit/customerPrice:0;
+  out.innerHTML=
+    '<strong>Total cost / unit: '+money(cost)+'</strong><br>'+
+    'Break-even list price: <strong>'+money(breakEven)+'</strong><br>'+
+    'Markup method list price: <strong>'+money(markupPrice)+'</strong><br>'+
+    'Target-margin list price: <strong>'+money(marginPrice)+'</strong><br>'+
+    'Target-profit list price: <strong>'+money(targetProfitPrice)+'</strong><br>'+
+    'Highest planning reference: <strong>'+money(recommended)+'</strong><br>'+
+    'Estimated profit at that reference after entered discount/fees: <strong>'+money(profit)+'</strong> ('+(actualMargin*100).toFixed(1)+'% margin)';
+}
+</script>
+</body></html>
