@@ -19,11 +19,7 @@ export default async function handler(req, res) {
     'cleaning_schedule',
     'private_chef_quote',
     'waste_cost',
-    'invoice_aging',
-    'dead_stock_view',
-    'dead_stock_scan',
-    'dead_stock_report',
-    'dead_stock_intent'
+    'invoice_aging'
   ]);
   const tool = allowed.has(String(payload.tool)) ? String(payload.tool) : 'unknown';
   const sourcePath = String(payload.sourcePath || '/').slice(0, 160);
