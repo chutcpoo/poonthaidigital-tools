@@ -1,5 +1,5 @@
-const fs = require('fs');
-const zlib = require('zlib');
+import fs from 'node:fs';
+import zlib from 'node:zlib';
 
 const compressed = fs.readFileSync('app.dat');
 const html = zlib.gunzipSync(compressed);
