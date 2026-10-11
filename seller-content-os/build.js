@@ -27,6 +27,7 @@ body.simple-mode header h1{font-size:30px;text-align:center}
 #quickHome h2{font-size:23px;margin:0 0 6px;text-align:center}
 #quickHome .quick-lead{text-align:center;color:#5f6e84;margin:0 0 18px}
 #qProduct{min-height:145px}
+#qPlatform{margin-bottom:14px;font-weight:700;background:#fff}
 #qMedia{padding:14px;background:#f8fbff;border:2px dashed #a9bde0}
 #qGo{width:100%;min-height:58px;font-size:19px;background:#1657c0;margin:14px 0 0}
 #qStatus{min-height:24px;margin:10px 0 0;text-align:center;color:#52627a;font-size:14px}
@@ -60,7 +61,18 @@ body.simple-mode #report,body.simple-mode #ready{display:none!important}
 const quickHtml = String.raw`
 <section id="quickHome">
   <h2>ใส่สินค้า แล้วกดสร้าง</h2>
-  <p class="quick-lead">ไม่ต้องเลือกแพลตฟอร์ม ไม่ต้องเขียน Prompt</p>
+  <p class="quick-lead">เลือกช่องทางที่ต้องการ แล้วระบบเตรียมงานให้ตามช่องทางนั้น</p>
+  <label>ต้องการทำ Social Media ไหน
+    <select id="qPlatform">
+      <option value="ALL">ทั้งหมด (ALL)</option>
+      <option value="TikTok">TikTok</option>
+      <option value="TikTok Shop">TikTok Shop</option>
+      <option value="Facebook">Facebook</option>
+      <option value="Instagram">Instagram</option>
+      <option value="YouTube Shorts">YouTube Shorts</option>
+      <option value="Shopee Video">Shopee Video</option>
+    </select>
+  </label>
   <label>ลิงก์สินค้า หรือชื่อสินค้า + จุดเด่น
     <textarea id="qProduct" placeholder="ตัวอย่าง&#10;เก้าอี้แคมป์ปิ้งพับได้&#10;พนักพิงสูง&#10;รับน้ำหนักได้ตามข้อมูลผู้ขาย&#10;https://..."></textarea>
   </label>
@@ -101,6 +113,15 @@ const quickJs = String.raw`
     var back=document.getElementById('backSimple');
     qExpert.onclick=function(){body.classList.remove('simple-mode');window.scrollTo({top:0,behavior:'smooth'});};
     back.onclick=function(){body.classList.add('simple-mode');window.scrollTo({top:0,behavior:'smooth'});};
+
+    function syncPlatformSelection(){
+      var pick=document.getElementById('qPlatform');
+      var wanted=pick?pick.value:'ALL';
+      document.querySelectorAll('[name="platform"]').forEach(function(cb){
+        cb.checked=(wanted==='ALL'||cb.value===wanted);
+      });
+      return wanted;
+    }
 
     function cloneFiles(source,target){
       if(!source||!target||!source.files)return;
@@ -220,6 +241,7 @@ const quickJs = String.raw`
       var parsed=fillQuickText(document.getElementById('qProduct').value);
       if(!parsed.ok){status.textContent=parsed.msg;return;}
       if(!consent.checked){status.textContent='กรุณาติ๊กยืนยันข้อมูลและสิทธิ์ก่อน';return;}
+      var selectedPlatform=syncPlatformSelection();
       var verified=document.getElementById('verified'),rights=document.getElementById('rights'),disclosure=document.getElementById('disclosure'),manual=document.getElementById('manual');
       if(verified)verified.checked=true;
       if(rights)rights.checked=true;
@@ -235,12 +257,18 @@ const quickJs = String.raw`
         if(original&&typeof original.onclick==='function')await original.onclick();
         renderSocialCards();
         var s=document.getElementById('summary');
-        status.textContent='เสร็จแล้ว — เลือกกล่อง Social Media ด้านล่าง';
+        status.textContent=selectedPlatform==='ALL'?'เสร็จแล้ว — สร้างครบทุก Social Media':'เสร็จแล้ว — '+selectedPlatform+' พร้อมทำขั้นตอนต่อไป';
         var social=document.getElementById('socialCards');
         if(social)social.scrollIntoView({behavior:'smooth',block:'start'});
       }catch(e){status.textContent='เกิดข้อผิดพลาด: '+e.message;}
       finally{qGo.disabled=false;qGo.textContent='สร้างคอนเทนต์ให้เลย';}
     };
+
+    document.getElementById('qPlatform').addEventListener('change',function(){
+      body.classList.remove('has-social-results');
+      var grid=document.getElementById('socialGrid');if(grid)grid.replaceChildren();
+      var status=document.getElementById('qStatus');if(status)status.textContent='เลือก '+(this.value==='ALL'?'ทุก Social Media':this.value)+' แล้ว — กดสร้างคอนเทนต์ให้เลย';
+    });
 
     document.getElementById('qMedia').addEventListener('change',function(){
       if(recheckAfterFile){recheckAfterFile=false;setTimeout(function(){qGo.click();},100);}
