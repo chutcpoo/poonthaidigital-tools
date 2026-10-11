@@ -15,9 +15,11 @@ let html = zlib.gunzipSync(compressed).toString('utf8');
 
 const quickCss = String.raw`
 <style id="quick-mode-style">
-body.simple-mode main{max-width:760px}
+body.simple-mode main{max-width:900px}
 body.simple-mode main>section,body.simple-mode #workgrid,body.simple-mode #advancedToggle{display:none!important}
 body.simple-mode #quickHome,body.simple-mode .quick-result{display:block!important}
+body.simple-mode #socialCards{display:none!important}
+body.simple-mode.has-social-results #socialCards{display:block!important}
 body.simple-mode header .sub,body.simple-mode header .thai-intro,body.simple-mode header .small{display:none!important}
 body.simple-mode header{padding:28px 4px 8px}
 body.simple-mode header h1{font-size:30px;text-align:center}
@@ -34,7 +36,25 @@ body.simple-mode #backSimple{display:none}
 body.simple-mode .quick-result h2{font-size:18px}
 body.simple-mode .quick-result{margin-top:14px}
 body.simple-mode #report,body.simple-mode #ready{display:none!important}
-@media(max-width:650px){#quickHome{padding:16px;border-radius:16px}body.simple-mode main{padding:10px}#qProduct{min-height:125px}}
+#socialCards{border:0;background:transparent;box-shadow:none;padding:0}
+#socialCards>h2{text-align:center;font-size:24px!important;margin:22px 0 4px}
+#socialCards>.social-lead{text-align:center;color:#66748a;margin:0 0 16px}
+.social-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.social-card{background:#fff;border:1px solid #e1e7f0;border-radius:18px;padding:18px;box-shadow:0 5px 20px #183a6b0d}
+.social-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.social-name{font-size:20px;font-weight:800;color:#173b80}
+.social-status{font-size:12px;font-weight:800;padding:5px 9px;border-radius:999px;background:#eef3fb;color:#31517f}
+.social-status.block{background:#fff0f0;color:#a02b2b}.social-status.review{background:#fff7df;color:#806016}.social-status.clear{background:#eafaf1;color:#187144}
+.social-next{font-size:14px;color:#53647c;margin:4px 0 12px}
+.social-step{border-top:1px solid #eef1f5;padding-top:11px;margin-top:11px}
+.social-step b{display:block;font-size:14px;margin-bottom:7px}
+.social-action{width:100%;margin:0 0 7px;min-height:46px;background:#1657c0}
+.social-action.flow{background:#6545c5}.social-action.upload{background:#217a55}
+.social-note{font-size:12px;color:#6a7688;line-height:1.5}
+.social-copy{margin-top:10px}.social-copy summary{cursor:pointer;color:#315b99;font-weight:700}.social-copy pre{font-size:12px;max-height:210px;overflow:auto;margin-bottom:0}
+#workflowHelp{background:#f6f9ff;border:1px solid #dce7f8;border-radius:15px;padding:14px 16px;margin-bottom:16px}
+#workflowHelp strong{color:#173b80}
+@media(max-width:720px){.social-grid{grid-template-columns:1fr}#quickHome{padding:16px;border-radius:16px}body.simple-mode main{padding:10px}#qProduct{min-height:125px}.social-card{padding:15px}}
 </style>`;
 
 const quickHtml = String.raw`
@@ -52,11 +72,18 @@ const quickHtml = String.raw`
   <p id="qStatus" aria-live="polite"></p>
   <button id="qExpert" type="button">ต้องการตั้งค่าแบบละเอียด</button>
 </section>
+<section id="socialCards" class="quick-result">
+  <h2>ทำต่อทีละ Social Media</h2>
+  <p class="social-lead">แต่ละกล่องบอกขั้นตอนถัดไปให้เลย</p>
+  <div id="workflowHelp"><strong>ทางลัด:</strong> 1) เปิด ChatGPT เพื่อทำสคริปต์ → 2) เปิด Google Flow เพื่อสร้างวิดีโอ → 3) อัปโหลดวิดีโอกลับมาตรวจอีกครั้ง</div>
+  <div id="socialGrid" class="social-grid"></div>
+</section>
 <button id="backSimple" type="button">กลับโหมดง่าย</button>`;
 
 const quickJs = String.raw`
 <script id="quick-mode-script">
 (function(){
+  var recheckAfterFile=false;
   function ready(){
     var body=document.body, main=document.querySelector('main');
     if(!body||!main)return;
@@ -65,9 +92,9 @@ const quickJs = String.raw`
     if(header&&header.querySelector('h1'))header.querySelector('h1').textContent='Seller Content OS';
     var home=document.getElementById('quickHome');
     if(header&&home)header.after(home);
-    var content=document.getElementById('content');
+    var board=document.getElementById('socialCards');
+    if(home&&board)home.after(board);
     var summary=document.getElementById('summary');
-    if(content&&content.closest('section'))content.closest('section').classList.add('quick-result');
     if(summary&&summary.closest('section'))summary.closest('section').classList.add('quick-result');
 
     var qExpert=document.getElementById('qExpert');
@@ -112,6 +139,79 @@ const quickJs = String.raw`
       return {ok:true};
     }
 
+    function statusForPlatform(p){
+      try{
+        var found=report&&Array.isArray(report.platforms)?report.platforms.find(function(x){return x.platform===p;}):null;
+        return found?found.status:'REVIEW';
+      }catch(e){return 'REVIEW';}
+    }
+
+    function statusClass(s){
+      if(s==='BLOCK')return 'block';
+      if(s==='PRECHECK_CLEAR')return 'clear';
+      return 'review';
+    }
+
+    function copyText(text){
+      if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(text);
+      var ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();return Promise.resolve();
+    }
+
+    function chatPrompt(platform,content){
+      return 'คุณเป็นผู้เชี่ยวชาญคอนเทนต์ขายสินค้าในไทย ช่วยปรับเนื้อหาต่อไปนี้สำหรับ '+platform+' ให้เป็นสคริปต์วิดีโอแนว UGC ภาษาไทย กระชับ เป็นธรรมชาติ ความยาวประมาณ 10 วินาที แบ่งเป็น Hook / ภาพที่เห็น / บทพูดหรือข้อความบนจอ / CTA ห้ามเพิ่มสรรพคุณ ราคา โปรโมชัน หรือข้อเท็จจริงที่ไม่มีในต้นฉบับ และให้เตือนจุดที่ควรเปิด Disclosure ตามแพลตฟอร์ม\n\n'+content;
+    }
+
+    function flowPrompt(platform,content){
+      return 'สร้างวิดีโอสินค้าแนว UGC สำหรับ '+platform+' อัตราส่วน 9:16 ความยาวประมาณ 10 วินาที ใช้ภาพสินค้าจริงเป็น reference หากมี รักษารูปร่าง สี โลโก้ และรายละเอียดสินค้าให้ตรงต้นฉบับ ไม่สร้างข้อความหรือสรรพคุณใหม่ ไม่ใส่ราคา/โปรโมชันที่ไม่ได้ยืนยัน จังหวะภาพเร็ว อ่านง่าย เหมาะกับผู้ชมไทย เน้น 4 ช็อต: 1) Hook 2) เห็นสินค้าชัด 3) จุดเด่นจากข้อมูลจริง 4) CTA ปิดท้าย\n\nข้อมูลคอนเทนต์:\n'+content;
+    }
+
+    function renderSocialCards(){
+      var grid=document.getElementById('socialGrid');
+      if(!grid)return;
+      grid.replaceChildren();
+      var keys=[];
+      try{keys=Object.keys(packs||{});}catch(e){}
+      if(!keys.length)return;
+      keys.forEach(function(p){
+        var content=packs[p]||'';
+        var st=statusForPlatform(p);
+        var card=document.createElement('article');card.className='social-card';
+        var head=document.createElement('div');head.className='social-card-head';
+        var name=document.createElement('div');name.className='social-name';name.textContent=p;
+        var badge=document.createElement('span');badge.className='social-status '+statusClass(st);badge.textContent=st;
+        head.append(name,badge);card.append(head);
+        var next=document.createElement('p');next.className='social-next';next.textContent='ทำตาม 3 ขั้นตอนนี้ได้เลย';card.append(next);
+
+        var step1=document.createElement('div');step1.className='social-step';
+        var t1=document.createElement('b');t1.textContent='ขั้นที่ 1 · ให้ ChatGPT ทำสคริปต์';
+        var b1=document.createElement('button');b1.className='social-action';b1.type='button';b1.textContent='คัดลอก Prompt + เปิด ChatGPT';
+        var n1=document.createElement('div');n1.className='social-note';n1.textContent='เปิดแล้วกด Paste เพื่อให้ ChatGPT จัดสคริปต์ของช่องทางนี้';
+        b1.onclick=function(){var w=window.open('https://chatgpt.com/','_blank','noopener');copyText(chatPrompt(p,content)).then(function(){n1.textContent='คัดลอกแล้ว — ไปที่ ChatGPT และกด Paste';}).catch(function(){n1.textContent='เปิด ChatGPT แล้ว แต่คัดลอกอัตโนมัติไม่สำเร็จ';});};
+        step1.append(t1,b1,n1);card.append(step1);
+
+        var step2=document.createElement('div');step2.className='social-step';
+        var t2=document.createElement('b');t2.textContent='ขั้นที่ 2 · สร้างวิดีโอใน Google Flow';
+        var b2=document.createElement('button');b2.className='social-action flow';b2.type='button';b2.textContent='คัดลอก Prompt + เปิด Google Flow';
+        var n2=document.createElement('div');n2.className='social-note';n2.textContent='นำ Prompt ไปวางใน Flow และใส่รูปสินค้าจริงเป็น reference ถ้ามี';
+        b2.onclick=function(){var w=window.open('https://flow.google/','_blank','noopener');copyText(flowPrompt(p,content)).then(function(){n2.textContent='คัดลอกแล้ว — ไปที่ Google Flow และกด Paste';}).catch(function(){n2.textContent='เปิด Google Flow แล้ว แต่คัดลอกอัตโนมัติไม่สำเร็จ';});};
+        step2.append(t2,b2,n2);card.append(step2);
+
+        var step3=document.createElement('div');step3.className='social-step';
+        var t3=document.createElement('b');t3.textContent='ขั้นที่ 3 · ได้วิดีโอแล้ว ตรวจอีกครั้ง';
+        var b3=document.createElement('button');b3.className='social-action upload';b3.type='button';b3.textContent='อัปโหลดวิดีโอกลับมาตรวจ';
+        var n3=document.createElement('div');n3.className='social-note';n3.textContent='เลือกไฟล์แล้วระบบจะรัน Media QC + Policy Precheck ซ้ำอัตโนมัติ';
+        b3.onclick=function(){recheckAfterFile=true;document.getElementById('qMedia').click();};
+        step3.append(t3,b3,n3);card.append(step3);
+
+        var details=document.createElement('details');details.className='social-copy';
+        var sum=document.createElement('summary');sum.textContent='ดูข้อความที่สร้างสำหรับ '+p;
+        var pre=document.createElement('pre');pre.textContent=content;
+        details.append(sum,pre);card.append(details);
+        grid.append(card);
+      });
+      body.classList.add('has-social-results');
+    }
+
     var qGo=document.getElementById('qGo');
     qGo.onclick=async function(){
       var status=document.getElementById('qStatus');
@@ -133,13 +233,18 @@ const quickJs = String.raw`
       try{
         var original=document.getElementById('generate');
         if(original&&typeof original.onclick==='function')await original.onclick();
+        renderSocialCards();
         var s=document.getElementById('summary');
-        status.textContent=s?s.textContent:'เสร็จแล้ว';
-        var result=document.getElementById('content');
-        if(result&&result.closest('section'))result.closest('section').scrollIntoView({behavior:'smooth',block:'start'});
+        status.textContent='เสร็จแล้ว — เลือกกล่อง Social Media ด้านล่าง';
+        var social=document.getElementById('socialCards');
+        if(social)social.scrollIntoView({behavior:'smooth',block:'start'});
       }catch(e){status.textContent='เกิดข้อผิดพลาด: '+e.message;}
       finally{qGo.disabled=false;qGo.textContent='สร้างคอนเทนต์ให้เลย';}
     };
+
+    document.getElementById('qMedia').addEventListener('change',function(){
+      if(recheckAfterFile){recheckAfterFile=false;setTimeout(function(){qGo.click();},100);}
+    });
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ready);else ready();
 })();
@@ -150,4 +255,4 @@ html = html.replace('</body>', quickHtml + quickJs + '</body>');
 
 fs.mkdirSync('dist', { recursive: true });
 fs.writeFileSync('dist/index.html', html);
-console.log('Seller Content OS quick build complete:', Buffer.byteLength(html), 'bytes');
+console.log('Seller Content OS guided social cards build complete:', Buffer.byteLength(html), 'bytes');
