@@ -178,12 +178,72 @@ const quickJs = String.raw`
       var ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();return Promise.resolve();
     }
 
+    function inferCreativeType(){
+      var text=((val('name')||'')+' '+facts().join(' ')).toLowerCase();
+      var rules=[
+        ['fashion',/(เสื้อ|กางเกง|รองเท้า|กระเป๋า|แฟชั่น|dress|shirt|shoe|bag)/i],
+        ['beauty',/(ครีม|เซรั่ม|โฟม|ลิป|เมคอัพ|สกินแคร์|กันแดด|beauty|serum|cream|lip)/i],
+        ['food',/(อาหาร|ขนม|กาแฟ|ชา|เครื่องดื่ม|ซอส|food|coffee|tea|snack)/i],
+        ['electronics',/(หูฟัง|ลำโพง|ชาร์จ|แบต|สายชาร์จ|พาวเวอร์แบงก์|ไฟฟ้า|อิเล็กทรอนิกส์|speaker|charger|battery|earbuds)/i],
+        ['home',/(เก้าอี้|โต๊ะ|ชั้น|ตู้|ครัว|บ้าน|แคมป์|ทำความสะอาด|ไม้ถู|เฟอร์นิเจอร์|chair|table|home|camp)/i],
+        ['health',/(อาหารเสริม|วิตามิน|สุขภาพ|supplement|vitamin)/i]
+      ];
+      for(var i=0;i<rules.length;i++)if(rules[i][1].test(text))return rules[i][0];
+      var chosen=val('category');
+      return chosen&&chosen!=='normal'?chosen:'general';
+    }
+
+    function productCreativeBrief(platform){
+      var type=inferCreativeType();
+      var creativeMap={
+        fashion:{format:'Try-on / Detail Showcase',angle:'โชว์ทรง วัสดุ รายละเอียด และการใช้งานจริง โดยไม่อ้างคุณสมบัติที่ไม่มีหลักฐาน',shots:'เปิดด้วยภาพสินค้าบนตัวหรือในมือ → close-up เนื้อผ้า/รายละเอียด → มุมใช้งาน → CTA'},
+        beauty:{format:'Texture / Application Demo',angle:'เน้นแพ็กเกจ เนื้อสัมผัส และวิธีใช้จากข้อมูลจริง ห้ามสร้างผลลัพธ์ก่อน-หลังหรือสรรพคุณเพิ่ม',shots:'แพ็กเกจชัด → texture close-up → วิธีใช้ → CTA'},
+        food:{format:'Food Close-up / ASMR',angle:'เน้นหน้าตา เนื้อสัมผัส การเสิร์ฟ และข้อมูลจริง ห้ามแต่งรสชาติหรือคุณประโยชน์ที่ไม่ได้ให้มา',shots:'เปิดด้วยภาพน่ากิน → close-up เนื้อสัมผัส → วิธีเสิร์ฟ/ใช้ → CTA'},
+        electronics:{format:'Hands-on Feature Demo',angle:'สาธิตฟังก์ชันและสเปกที่มีอยู่จริง ให้เห็นการใช้งานแทนการกล่าวอ้างกว้าง ๆ',shots:'Hook ด้วยการใช้งาน → close-up จุดเด่น → demo ฟังก์ชัน → CTA'},
+        home:{format:'Problem-Solution Demonstration',angle:'เริ่มจากสถานการณ์ใช้งานจริง แล้วสาธิตสินค้าให้เห็นขนาด รูปทรง และฟังก์ชันตามข้อมูล',shots:'สถานการณ์ใช้งาน → เปิด/พับ/ใช้งานจริง → close-up จุดเด่น → CTA'},
+        health:{format:'Label / Product Information',angle:'เน้นฉลาก บรรจุภัณฑ์ และข้อมูลที่ตรวจสอบได้เท่านั้น ห้ามกล่าวอ้างรักษา ป้องกันโรค หรือผลลัพธ์',shots:'แพ็กเกจ → ฉลาก/ข้อมูล → วิธีใช้ตามข้อมูล → CTA'},
+        general:{format:'Product Demonstration / POV',angle:'ให้เห็นสินค้าจริงและจุดเด่นที่ผู้ใช้ระบุ โดยเลือกภาพสาธิตที่ตรงกับลักษณะสินค้า',shots:'Hook จากสินค้าจริง → จุดเด่นข้อ 1 → จุดเด่นข้อ 2/การใช้งาน → CTA'}
+      };
+      var category=creativeMap[type]||creativeMap.general;
+      var social={
+        'TikTok':{duration:'9–12 วินาที',style:'UGC hook-first จังหวะเร็ว ภาษาพูดธรรมชาติ',hook:'เปิด 1–2 วินาทีแรกด้วยปัญหา/ความน่าสนใจที่สัมพันธ์กับสินค้านี้',cta:'ชวนดูรายละเอียดต่อ โดยไม่กดดันหรือสร้าง FOMO เท็จ'},
+        'TikTok Shop':{duration:'10–15 วินาที',style:'Product demo เน้นสินค้าที่ผูกกับวิดีโอและข้อมูลตรงหน้าสินค้า',hook:'ให้สินค้าและการใช้งานจริงปรากฏตั้งแต่ต้น',cta:'ชวนตรวจรายละเอียดสินค้าที่ผูกกับวิดีโอก่อนสั่งซื้อ'},
+        'Facebook':{duration:'12–18 วินาที',style:'Problem-solution ชัด อ่านง่าย เหมาะกับดูแบบเปิด/ปิดเสียง',hook:'เริ่มจากสถานการณ์ใช้งานที่คนทั่วไปเข้าใจทันที',cta:'ชวนอ่านรายละเอียดหรือสอบถามเพิ่มเติม'},
+        'Instagram':{duration:'10–15 วินาที',style:'Reels แบบ visual-first ภาพสะอาด กระชับ ดูพรีเมียม',hook:'เปิดด้วย hero shot หรือรายละเอียดที่เด่นที่สุดของสินค้า',cta:'ชวนดูรายละเอียดในโพสต์/ลิงก์ที่ระบุ'},
+        'YouTube Shorts':{duration:'15–20 วินาที',style:'Mini explainer / demo เข้าเรื่องเร็วแต่ให้ข้อมูลชัด',hook:'ตั้งโจทย์สั้น ๆ แล้วตอบด้วยการสาธิตสินค้า',cta:'ชวนดูข้อมูลเพิ่มเติมในคำอธิบาย'},
+        'Shopee Video':{duration:'10–15 วินาที',style:'Marketplace product demo เห็นสินค้าเต็มและรายละเอียดชัด',hook:'เริ่มด้วยสินค้าจริงพร้อมจุดเด่นที่ตรวจสอบได้',cta:'ชวนตรวจรายละเอียดสินค้าที่ลิงก์ใน Shopee'}
+      }[platform]||{duration:'10–15 วินาที',style:'Product demo กระชับ',hook:'เปิดด้วยสินค้าจริง',cta:'ชวนดูรายละเอียด'};
+      return {type:type,category:category,social:social};
+    }
+
+    function promptProductFacts(){
+      var fs=facts();
+      return fs.length?fs.map(function(x,i){return (i+1)+'. '+x;}).join('\n'):'1. ไม่มีข้อมูลจุดเด่นเพิ่มเติม';
+    }
+
     function chatPrompt(platform,content){
-      return 'คุณเป็นผู้เชี่ยวชาญคอนเทนต์ขายสินค้าในไทย ช่วยปรับเนื้อหาต่อไปนี้สำหรับ '+platform+' ให้เป็นสคริปต์วิดีโอแนว UGC ภาษาไทย กระชับ เป็นธรรมชาติ ความยาวประมาณ 10 วินาที แบ่งเป็น Hook / ภาพที่เห็น / บทพูดหรือข้อความบนจอ / CTA ห้ามเพิ่มสรรพคุณ ราคา โปรโมชัน หรือข้อเท็จจริงที่ไม่มีในต้นฉบับ และให้เตือนจุดที่ควรเปิด Disclosure ตามแพลตฟอร์ม\n\n'+content;
+      var b=productCreativeBrief(platform);
+      var product=val('name')||'สินค้า';
+      var audience=val('aud')||'ผู้ซื้อทั่วไปในไทย';
+      return 'สร้างสคริปต์ใหม่สำหรับสินค้านี้โดยเฉพาะ ห้ามใช้สคริปต์สำเร็จรูปซ้ำกับสินค้าอื่น\n\n'+
+        'สินค้า: '+product+'\nแพลตฟอร์ม: '+platform+'\nกลุ่มเป้าหมาย: '+audience+'\nประเภทครีเอทีฟที่เหมาะกับสินค้านี้: '+b.category.format+'\n'+
+        'มุมขาย: '+b.category.angle+'\nสไตล์ของแพลตฟอร์ม: '+b.social.style+'\nความยาวเป้าหมาย: '+b.social.duration+'\n'+
+        'ข้อเท็จจริงที่อนุญาตให้ใช้เท่านั้น:\n'+promptProductFacts()+'\n\n'+
+        'ให้สร้าง: 1) Hook เฉพาะสินค้านี้ 2) Shot list 4–5 ช็อต 3) บทพูดภาษาไทยธรรมชาติ 4) ข้อความบนจอ 5) CTA ที่เหมาะกับ '+platform+'\n'+
+        'แนว Hook: '+b.social.hook+'\nแนวภาพ: '+b.category.shots+'\nCTA: '+b.social.cta+'\n\n'+
+        'กฎ: ห้ามเพิ่มสเปก ราคา โปรโมชัน รีวิว ผลลัพธ์ หรือสรรพคุณที่ไม่มีในข้อเท็จจริง ห้ามคำรับประกันเกินจริง และระบุจุดที่ต้องเปิด Disclosure ถ้ามีความสัมพันธ์เชิงพาณิชย์\n\n'+
+        'ร่างจากระบบสำหรับใช้อ้างอิง:\n'+content;
     }
 
     function flowPrompt(platform,content){
-      return 'สร้างวิดีโอสินค้าแนว UGC สำหรับ '+platform+' อัตราส่วน 9:16 ความยาวประมาณ 10 วินาที ใช้ภาพสินค้าจริงเป็น reference หากมี รักษารูปร่าง สี โลโก้ และรายละเอียดสินค้าให้ตรงต้นฉบับ ไม่สร้างข้อความหรือสรรพคุณใหม่ ไม่ใส่ราคา/โปรโมชันที่ไม่ได้ยืนยัน จังหวะภาพเร็ว อ่านง่าย เหมาะกับผู้ชมไทย เน้น 4 ช็อต: 1) Hook 2) เห็นสินค้าชัด 3) จุดเด่นจากข้อมูลจริง 4) CTA ปิดท้าย\n\nข้อมูลคอนเทนต์:\n'+content;
+      var b=productCreativeBrief(platform);
+      var product=val('name')||'สินค้า';
+      return 'สร้างวิดีโอสำหรับสินค้า "'+product+'" โดยเฉพาะ ไม่ใช้ shot pattern แบบเดียวกับสินค้าชนิดอื่น\n\n'+
+        'PLATFORM: '+platform+'\nFORMAT: '+b.category.format+'\nDURATION: '+b.social.duration+'\nASPECT RATIO: 9:16\nSTYLE: '+b.social.style+'\n'+
+        'PRODUCT-SPECIFIC DIRECTION: '+b.category.angle+'\nSHOT FLOW: '+b.category.shots+'\nHOOK DIRECTION: '+b.social.hook+'\nCTA DIRECTION: '+b.social.cta+'\n\n'+
+        'FACTS THAT MAY APPEAR ON SCREEN OR BE IMPLIED:\n'+promptProductFacts()+'\n\n'+
+        'VISUAL RULES: ใช้ภาพสินค้าจริงเป็น reference ถ้ามี; รักษารูปร่าง สี โลโก้ วัสดุ จำนวนชิ้น และรายละเอียดสินค้าให้ตรงต้นฉบับ; ห้ามสร้างฟังก์ชัน ส่วนประกอบ ราคา โปรโมชัน รีวิว หรือผลลัพธ์ใหม่; ห้ามเปลี่ยนสินค้าเป็นคนละรุ่น; ข้อความบนจอต้องสั้นและมาจาก facts เท่านั้น.\n\n'+
+        'CONTENT REFERENCE:\n'+content;
     }
 
     function renderSocialCards(){
